@@ -1,4 +1,4 @@
-import { ArmorClasses } from "./armor-classes.model";
+import type { ArmorClasses } from "./armor-classes.model";
 
 
 export class ArmorStats {

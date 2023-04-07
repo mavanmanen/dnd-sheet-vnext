@@ -54,10 +54,13 @@ let counter = ref(10)
 onMounted(() => {
   setupTextAreaResize()
 
+  // @ts-ignore
   if(window.saveInterval !== undefined) {
+    // @ts-ignore
     window.clearInterval(window.saveInterval)
   }
 
+  // @ts-ignore
   window.saveInterval = window.setInterval(() => {
     counter.value--
     if(counter.value === 0) {
@@ -97,6 +100,7 @@ function isActiveNote(id: string) {
 }
 
 function onSheetSelectionChange(event: Event) {
+  // @ts-ignore
   sheetData.value = sheets.value.get(event.target.value)
 }
 
