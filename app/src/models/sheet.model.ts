@@ -4,7 +4,6 @@ import { AbilityNames } from "./ability-names.model"
 import { Skill } from "./skill.model"
 import { SkillNames } from "./skill-names.model"
 import { ArmorTypes } from "./armor-types.model"
-import { ArmorClasses } from "./armor-classes.model"
 import { SkillAbilityTable } from "./skill-ability-table.model"
 import { Currency } from "./currency.model"
 import { Equipment } from "./equipment-item.model"
@@ -14,6 +13,7 @@ import { Proficiencies } from "./proficiencies.model"
 import { Note } from "./note.model"
 
 export class Sheet {
+    public id: string
     public characterInfo: CharacterInfo
     public abilityScores: Array<AbilityScore> 
     public inspiration: number
@@ -41,6 +41,7 @@ export class Sheet {
     public notes: Array<Note>
 
     constructor(
+        id: string,
         characterInfo: CharacterInfo,
         abilityScores: Array<AbilityScore>,
         inspiration: number,
@@ -66,6 +67,7 @@ export class Sheet {
         features: Array<Feature>,
         proficiencies: Proficiencies,
         notes: Array<Note>) {
+        this.id = id
         this.characterInfo = characterInfo
         this.abilityScores = abilityScores
         this.inspiration = inspiration
@@ -95,6 +97,7 @@ export class Sheet {
 
     public static new(): Sheet {
         return new Sheet(
+            crypto.randomUUID(),
             CharacterInfo.new(),
             new Array<AbilityScore>(
                 new AbilityScore(AbilityNames.Strength),
@@ -164,6 +167,7 @@ export class Sheet {
     public static fromJSON(json: string): Sheet {
         const data = JSON.parse(json)
         return new Sheet(
+            data.id,
             CharacterInfo.fromJSON(JSON.stringify(data.characterInfo)),
             data.abilityScores.map((x: object) => AbilityScore.fromJSON(JSON.stringify(x))),
             data.inspiration,

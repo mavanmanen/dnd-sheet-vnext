@@ -1,38 +1,25 @@
 <script setup lang="ts">
 import { onMounted, onUpdated, ref } from 'vue'
-import { AbilityNames, Sheet, SkillNames, ArmorTypes } from './models'
+import { AbilityNames, Sheet, SkillNames, ArmorTypes } from '../models'
 import '@/extensions'
-import type { Note } from './models/note.model';
+import type { Note } from '../models/note.model'
+import apiService from '@/services/ApiService'
 
-const sheetPrefix = 'sheet-'
+let sheets = ref(await getSheets())
+let sheetId = ref(sheets.value.size == 0 ? null : [...sheets.value][0][0])
+let sheetData = ref(sheetId.value == null ? Sheet.new() : sheets.value.get(sheetId.value!))
 
-let sheets = ref(getSheets())
-let sheetData = ref(sheets.value.entries().next().value[1])
-
-function saveSheet() {
-  for(const sheet of sheets.value) {
-    const key = sheet[0]
-    const json = JSON.stringify(sheet[1])
-    localStorage.setItem(key, json)
-  }
+async function getSheets() {
+  return await apiService.GetSheetsAsync()
 }
 
-function getSheets(): Map<string, Sheet> {
-  if(localStorage.length === 0) {
-    return new Map<string, Sheet>([[sheetPrefix + crypto.randomUUID(), Sheet.new()]])
+async function saveSheet() {
+  await apiService.SaveSheetAsync(sheetId.value, sheetData.value!)
+  sheets.value = await apiService.GetSheetsAsync()
+  if(sheetId.value == null) {
+    sheetId.value = [...sheets.value][0][0]
+    sheetData =
   }
-
-  var retVal = new Map<string, Sheet>()
-
-  for (let index = 0; index < localStorage.length; index++) {
-    const key = localStorage.key(index)!
-    if(key.startsWith(sheetPrefix)) {
-      const sheet = Sheet.fromJSON(localStorage.getItem(key)!)
-      retVal.set(key, sheet)
-    }
-  }
-
-  return retVal
 }
 
 function resizeTextArea(target: any) {
@@ -54,20 +41,20 @@ let counter = ref(10)
 onMounted(() => {
   setupTextAreaResize()
 
-  // @ts-ignore
-  if(window.saveInterval !== undefined) {
-    // @ts-ignore
-    window.clearInterval(window.saveInterval)
-  }
+  // // @ts-ignore
+  // if(window.saveInterval !== undefined) {
+  //   // @ts-ignore
+  //   window.clearInterval(window.saveInterval)
+  // }
 
-  // @ts-ignore
-  window.saveInterval = window.setInterval(() => {
-    counter.value--
-    if(counter.value === 0) {
-      counter.value = 10
-      saveSheet()
-    }
-  }, 1000)
+  // // @ts-ignore
+  // window.saveInterval = window.setInterval(() => {
+  //   counter.value--
+  //   if(counter.value === 0) {
+  //     counter.value = 10
+  //     saveSheet()
+  //   }
+  // }, 1000)
 })
 
 onUpdated(() => {
@@ -89,7 +76,6 @@ function isActiveTab(tab: Tabs): boolean {
   return activeTab.value === tab
 }
 
-let activeNote = ref(sheetData.value.notes[0])
 
 function setActiveNote(id: string) {
   activeNote.value = sheetData.value.notes.find((note: Note) => note.id === id)
@@ -101,7 +87,8 @@ function isActiveNote(id: string) {
 
 function onSheetSelectionChange(event: Event) {
   // @ts-ignore
-  sheetData.value = sheets.value.get(event.target.value)
+  sheetId = event.target?.value
+  sheetData.value = sheets.get(sheetId)
 }
 
 function addSheet() {
@@ -129,7 +116,7 @@ function print() {
   <div class="row hide-print">
     <div id="sheet-selection" class="cell row shrink">
       <select @change="onSheetSelectionChange">
-        <option v-for="sheet in getSheets()" :value="sheet[0]">{{ sheet[1].characterInfo.name }}</option>
+        <option v-for="sheet in sheets" :value="sheet[0]">{{ sheet[1].characterInfo.name }}</option>
       </select>
       <button @click="addSheet">+</button>
     </div>
