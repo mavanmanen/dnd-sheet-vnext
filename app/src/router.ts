@@ -7,6 +7,11 @@ const router = createRouter({
             path: '/',
             component: () => import('@/views/Sheet.vue'),
             beforeEnter: (to, from) => {
+                if(to.path == '/.auth/login/github')
+                {
+                    return true;
+                }
+                
                 // @ts-ignore
                 const cookies = router.app?.$cookies
                 const authCookie = cookies.get('StaticWebAppsAuthCookie')
