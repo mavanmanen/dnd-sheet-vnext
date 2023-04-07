@@ -6,16 +6,17 @@ const router = createRouter({
         {
             path: '/',
             component: () => import('@/views/Sheet.vue'),
-            beforeEnter: (to, from, next) => {
+            beforeEnter: (to, from) => {
+                console.log(to, from)
                 // @ts-ignore
                 const cookies = router.app?.$cookies
                 const authCookie = cookies.get('StaticWebAppsAuthCookie')
                 if(!authCookie)
                 {
-                    return next('/.auth/login/github')
+                    return '/.auth/login/github'
                 }
 
-                return next()
+                return true
             }
         }
     ]
