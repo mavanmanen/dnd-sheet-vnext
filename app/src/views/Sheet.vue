@@ -18,7 +18,6 @@ async function saveSheet() {
   sheets.value = await apiService.GetSheetsAsync()
   if(sheetId.value == null) {
     sheetId.value = [...sheets.value][0][0]
-    sheetData =
   }
 }
 
