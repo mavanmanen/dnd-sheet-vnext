@@ -15,6 +15,6 @@ public class Startup : FunctionsStartup
     public override void Configure(IFunctionsHostBuilder builder)
     {
         var configuration = builder.GetContext().Configuration;
-        builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlite(configuration.GetConnectionString("Database")));
+        builder.Services.AddDbContext<DatabaseContext>(options => options.UseSqlite(configuration.GetConnectionStringOrSetting("DatabaseConnectionString")));
     }
 }

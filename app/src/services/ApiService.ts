@@ -3,7 +3,8 @@ import { Sheet } from "@/models"
 export class ApiService {
 
     public async GetSheetsAsync(): Promise<Map<string, Sheet>> {
-        const response = await fetch('/api/sheets', {
+        console.log(import.meta.env)
+        const response = await fetch(`${import.meta.env.VITE_API_CONNECTION}/sheets`, {
             method: 'GET',
             credentials: 'include',
             mode: 'cors'
@@ -23,7 +24,7 @@ export class ApiService {
     }
 
     public async SaveSheetAsync(id: string | null, sheet: Sheet): Promise<void> {
-        const response = await fetch(`/api/sheets/${id ?? ''}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_CONNECTION}/sheets/${id ?? ''}`, {
             method: 'POST',
             credentials: 'include',
             mode: 'cors',
