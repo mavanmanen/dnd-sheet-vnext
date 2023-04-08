@@ -1,0 +1,30 @@
+{
+  "$schema": "https://github.com/Azure/data-api-builder/releases/download/v0.6.13/dab.draft.schema.json",
+  "data-source": {
+    "database-type": "cosmosdb_nosql",
+    "options": {
+      "database": "mvm-playground-db",
+      "container": "dnd-sheet",
+      "schema": "staticwebapp.database.schema.gql"
+    },
+    "connection-string": "AccountEndpoint=https://mvm-playground-db.documents.azure.com:443/;AccountKey=W6Iyt0ck0ZmI4v60bFcHHQ8FQdVbhTXcNnRLihsdQcTJGs8e8Dj4E638BEtuubfHoG97pZMhi6XpACDb8RS60w==;"
+  },
+  "runtime": {
+    "graphql": {
+      "allow-introspection": true,
+      "enabled": true,
+      "path": "/graphql"
+    },
+    "host": {
+      "mode": "production",
+      "cors": {
+        "origins": [],
+        "allow-credentials": false
+      },
+      "authentication": {
+        "provider": "StaticWebApps"
+      }
+    }
+  },
+  "entities": {}
+}
