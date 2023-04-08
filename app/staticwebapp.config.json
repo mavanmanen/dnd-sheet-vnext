@@ -10,7 +10,7 @@
         },
         {
             "route": "/login",
-            "redirect": "/.auth/login/github"
+            "rewrite": "/.auth/login/github"
         },
         {
             "route": "/.auth/login/twitter",
@@ -18,7 +18,7 @@
         },
         {
             "route": "/logout",
-            "redirect": "/.auth/logout"
+            "rewrite": "/.auth/logout"
         }
     ],
     "responseOverrides": {
