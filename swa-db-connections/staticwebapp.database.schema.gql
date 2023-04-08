@@ -1,5 +1,0 @@
-type Sheet @model {
-  id: ID!
-  userId: String! @search
-  json: String
-}

@@ -5,19 +5,15 @@ import '@/extensions'
 import type { Note } from '../models/note.model'
 import apiService from '@/services/ApiService'
 
-let sheets = ref(await getSheets())
-let sheetId = ref(sheets.value.size == 0 ? null : [...sheets.value][0][0])
-let sheetData = ref(sheetId.value == null ? Sheet.new() : sheets.value.get(sheetId.value!))
-
-async function getSheets() {
-  return await apiService.GetSheetsAsync()
-}
+let sheets = await apiService.GetSheetsAsync()
+let sheetId = ref(sheets.size == 0 ? null : [...sheets][0][0])
+let sheetData = ref(sheetId.value == null ? Sheet.new() : sheets.get(sheetId.value!)!)
 
 async function saveSheet() {
   await apiService.SaveSheetAsync(sheetId.value, sheetData.value!)
-  sheets.value = await apiService.GetSheetsAsync()
+  sheets = await apiService.GetSheetsAsync()
   if(sheetId.value == null) {
-    sheetId.value = [...sheets.value][0][0]
+    sheetId.value = [...sheets][0][0]
   }
 }
 
@@ -35,25 +31,8 @@ function setupTextAreaResize() {
   }
 }
 
-let counter = ref(10)
-
 onMounted(() => {
   setupTextAreaResize()
-
-  // // @ts-ignore
-  // if(window.saveInterval !== undefined) {
-  //   // @ts-ignore
-  //   window.clearInterval(window.saveInterval)
-  // }
-
-  // // @ts-ignore
-  // window.saveInterval = window.setInterval(() => {
-  //   counter.value--
-  //   if(counter.value === 0) {
-  //     counter.value = 10
-  //     saveSheet()
-  //   }
-  // }, 1000)
 })
 
 onUpdated(() => {
@@ -75,25 +54,16 @@ function isActiveTab(tab: Tabs): boolean {
   return activeTab.value === tab
 }
 
-
-function setActiveNote(id: string) {
-  activeNote.value = sheetData.value.notes.find((note: Note) => note.id === id)
-}
-
-function isActiveNote(id: string) {
-  return activeNote.value.id === id
-}
-
 function onSheetSelectionChange(event: Event) {
   // @ts-ignore
-  sheetId = event.target?.value
-  sheetData.value = sheets.get(sheetId)
+  sheetId.value = event.target.value
+  sheetData.value = sheets.get(sheetId.value!)!
 }
 
 function addSheet() {
-  const key = sheetPrefix + crypto.randomUUID()
-  const json = JSON.stringify(Sheet.new())
-  localStorage.setItem(key, json)
+  sheetId.value = null
+  sheetData.value = Sheet.new()
+  sheets.set(sheetId.value, sheetData.value)
 }
 
 function exportSheetJSON() {
@@ -123,9 +93,6 @@ function print() {
       <button @click="saveSheet">Save</button>
       <button @click="exportSheetJSON">Export JSON</button>
       <button @click="print">Print</button>
-    </div>
-    <div class="cell row shrink">
-      <span>Autosaving in: {{ counter }}</span>
     </div>
     <div id="tab-buttons" class="cell row shrink button-group">
       <button @click="setActiveTab(Tabs.Sheet)" :disabled="isActiveTab(Tabs.Sheet)">Sheet</button>
@@ -487,7 +454,7 @@ function print() {
     </div>
   </div>
 
-  <div class="container" v-if="isActiveTab(Tabs.Notes)">
+  <!-- <div class="container" v-if="isActiveTab(Tabs.Notes)">
     <div class="column">
       <div class="row">
         <div id="notes" class="row">
@@ -504,7 +471,7 @@ function print() {
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </div>
 </template>
 

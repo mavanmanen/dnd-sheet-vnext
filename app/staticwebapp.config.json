@@ -5,6 +5,10 @@
             "allowedRoles": ["authenticated"]
         },
         {
+            "route": "/api/*",
+            "allowedRoles": ["authenticated"]
+        },
+        {
             "route": "/login",
             "rewrite": "/.auth/login/github"
         },
@@ -18,5 +22,9 @@
             "redirect": "/login",
             "statusCode": 302
         }
+    },
+    "navigationFallback": {
+        "rewrite": "index.html",
+        "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
     }
 }
