@@ -1,5 +1,4 @@
-﻿using System;
-using Mavanmanen.DndSheet.API;
+﻿using Mavanmanen.DndSheet.API;
 using Mavanmanen.DndSheet.API.Data;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
