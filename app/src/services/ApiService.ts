@@ -1,24 +1,49 @@
-import { Sheet } from "@/models"
+import type { Sheet, User } from "@/models"
 
 export class ApiService {
 
+    private async GetUser(): Promise<User> {
+        const response = await fetch('/.auth/me');
+        return await response.json() as User
+    }
+
     public async GetSheetsAsync(): Promise<Map<string, Sheet>> {
-        console.log(import.meta.env)
-        const response = await fetch(`${import.meta.env.VITE_API_CONNECTION}/sheets`, {
-            method: 'GET',
-            credentials: 'include',
-            mode: 'cors'
+        const gql = `
+        query {
+            sheets(filter: { 
+                userId: {
+                    eq: ""
+                }
+             }) {
+                items {
+                    id,
+                    json,
+                    $userId
+                }
+            }
+        }`
+
+        const user = await this.GetUser()
+
+        const query = {
+            query: gql,
+            variables: {
+                userId: user.clientPrincipal.userId
+            }
+        }
+
+        const response = await fetch('/data-api/graphql', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(query)
         })
 
-        const json = await response.json()
-        // @ts-ignore
-        const data = new Map<string, any>(Object.entries(json))
-        const retVal = new Map<string, Sheet>()
+        const result = await response.json()
+        console.table(result.data.sheet_by_userid)
 
-        for(let key of Object.keys(data))
-        {
-            retVal.set(key, Sheet.fromJSON(data.get(key)))
-        }
+        const retVal = new Map<string, Sheet>()
 
         return retVal
     }

@@ -5,16 +5,8 @@
             "allowedRoles": ["authenticated"]
         },
         {
-            "route": "/api/*",
-            "allowedRoles": ["authenticated"]
-        },
-        {
             "route": "/login",
             "rewrite": "/.auth/login/github"
-        },
-        {
-            "route": "/.auth/login/twitter",
-            "statusCode": 404
         },
         {
             "route": "/logout",
@@ -26,9 +18,5 @@
             "redirect": "/login",
             "statusCode": 302
         }
-    },
-    "navigationFallback": {
-        "rewrite": "index.html",
-        "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
     }
 }

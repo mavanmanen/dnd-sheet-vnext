@@ -4,7 +4,6 @@
     "database-type": "cosmosdb_nosql",
     "options": {
       "database": "mvm-playground-db",
-      "container": "dnd-sheet",
       "schema": "staticwebapp.database.schema.gql"
     },
     "connection-string": "AccountEndpoint=https://mvm-playground-db.documents.azure.com:443/;AccountKey=W6Iyt0ck0ZmI4v60bFcHHQ8FQdVbhTXcNnRLihsdQcTJGs8e8Dj4E638BEtuubfHoG97pZMhi6XpACDb8RS60w==;"
@@ -16,7 +15,7 @@
       "path": "/graphql"
     },
     "host": {
-      "mode": "production",
+      "mode": "development",
       "cors": {
         "origins": [],
         "allow-credentials": false
@@ -26,5 +25,15 @@
       }
     }
   },
-  "entities": {}
+  "entities": {
+    "Sheet": {
+      "source": "sheets",
+      "permissions": [
+        {
+          "actions": ["*"],
+          "role": "authenticated"
+        }
+      ]
+    }
+  }
 }
