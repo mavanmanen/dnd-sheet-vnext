@@ -160,8 +160,6 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
   format?: ResponseFormat;
   /** request body */
   body?: unknown;
-  /** base url */
-  baseUrl?: string;
   /** request cancellation token */
   cancelToken?: CancelToken;
 }
@@ -169,8 +167,7 @@ export interface FullRequestParams extends Omit<RequestInit, "body"> {
 export type RequestParams = Omit<FullRequestParams, "body" | "method" | "query" | "path">;
 
 export interface ApiConfig<SecurityDataType = unknown> {
-  baseUrl?: string;
-  baseApiParams?: Omit<RequestParams, "baseUrl" | "cancelToken" | "signal">;
+  baseApiParams?: Omit<RequestParams, "cancelToken" | "signal">;
   securityWorker?: (securityData: SecurityDataType | null) => Promise<RequestParams | void> | RequestParams | void;
   customFetch?: typeof fetch;
 }
@@ -190,7 +187,6 @@ export enum ContentType {
 }
 
 export class HttpClient<SecurityDataType = unknown> {
-  public baseUrl: string = "http://localhost:7071";
   private securityData: SecurityDataType | null = null;
   private securityWorker?: ApiConfig<SecurityDataType>["securityWorker"];
   private abortControllers = new Map<CancelToken, AbortController>();
@@ -301,7 +297,6 @@ export class HttpClient<SecurityDataType = unknown> {
     type,
     query,
     format,
-    baseUrl,
     cancelToken,
     ...params
   }: FullRequestParams): Promise<T> => {
@@ -315,7 +310,7 @@ export class HttpClient<SecurityDataType = unknown> {
     const payloadFormatter = this.contentFormatters[type || ContentType.Json];
     const responseFormat = format || requestParams.format;
 
-    return this.customFetch(`${baseUrl || this.baseUrl || ""}${path}${queryString ? `?${queryString}` : ""}`, {
+    return this.customFetch(`${path}${queryString ? `?${queryString}` : ""}`, {
       ...requestParams,
       headers: {
         ...(requestParams.headers || {}),
