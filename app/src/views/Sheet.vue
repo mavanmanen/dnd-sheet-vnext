@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import '@/extensions'
 import { onMounted, onUpdated, ref } from 'vue'
-import { Api, type Ability, type Skill, type Sheet, type Attack, type Feature, type Equipment } from '@/services/Api'
+import { ApiClient } from '@/services/api-client'
+import type { Ability, Skill, Sheet, Attack, Feature, Equipment } from '@/models';
 
 interface User {
   clientPrincipal: {
@@ -40,7 +41,7 @@ const armorTypeAc = new Map<string, number>([
     [ 'Plate', 18 ]
 ])
 
-const apiClient = new Api()
+const apiClient = new ApiClient()
 const user = await getUserAsync()
 
 let sheets = ref(new Array<Sheet>())
@@ -54,7 +55,7 @@ async function getUserAsync(): Promise<User> {
 }
 
 async function saveSheetAsync(): Promise<void> {
-  const sheet = await apiClient.api.addUpdateSheet(user.clientPrincipal.userId, selectedSheetId.value, selectedSheet.value)
+  const sheet = await apiClient.addUpdateSheetAsync(user.clientPrincipal.userId, selectedSheet.value, selectedSheetId.value)
   await loadSheetsAsync();
   selectedSheetId.value = sheet.id
   selectedSheet.value = sheet
@@ -151,7 +152,7 @@ function newSheet(userId: string): Sheet {
 }
 
 async function newSheetAsync(): Promise<Sheet> {
-  return await apiClient.api.addUpdateSheet(user.clientPrincipal.userId, undefined, newSheet(user.clientPrincipal.userId))
+  return await apiClient.addUpdateSheetAsync(user.clientPrincipal.userId, newSheet(user.clientPrincipal.userId))
 }
 
 async function addSheetAsync() {
@@ -163,13 +164,13 @@ async function addSheetAsync() {
 
 async function deleteSheetAsync(id: number): Promise<void> {
   if(window.confirm("Are you sure you want to delete this sheet?")) {
-    await apiClient.api.deleteSheet(user.clientPrincipal.userId, id)
+    await apiClient.deleteSheetAsync(user.clientPrincipal.userId, id)
     await loadSheetsAsync()
   }
 }
 
 async function loadSheetsAsync(): Promise<void> {
-  sheets.value = await apiClient.api.userSheets(user.clientPrincipal.userId)
+  sheets.value = await apiClient.listSheetsAsync(user.clientPrincipal.userId)
   console.log(sheets.value)
 }
 
@@ -195,13 +196,17 @@ function setupTextAreaResize() {
   }
 }
 
-onMounted(() => {
-  setupTextAreaResize()
-})
+function exportSheetJSON() {
+  const blob = new Blob([JSON.stringify(selectedSheet.value, undefined, 2)])
+  const blobUrl = URL.createObjectURL(blob)
+  var link = document.createElement('a')
+  link.href = blobUrl
+  link.download = `${selectedSheet.value.characterInfo.name}.json`
+  link.click()
+}
 
-onUpdated(() => {
-  setupTextAreaResize()
-})
+onMounted(() => setupTextAreaResize())
+onUpdated(() => setupTextAreaResize())
 
 const skillToAbility = new Map<string, string>([
     [ 'Acrobatics', 'Dexterity' ],
@@ -354,6 +359,7 @@ if(sheets.value.length != 0) {
     </div>
     <div id="controls" class="cell row shrink button-group">
       <button @click="saveSheetAsync()">Save</button>
+      <button @click="exportSheetJSON()">Export JSON</button>
     </div>
     <!-- <div id="tab-buttons" class="cell row shrink button-group">
       <button @click="setActiveTab(Tab.Sheet)" :disabled="isActiveTab(Tab.Sheet)">Sheet</button>
@@ -1219,38 +1225,6 @@ input {
     &:last-child {
       margin-right: 0;
     }
-  }
-}
-
-@media print {
-  @page {
-    size: A4;
-    margin: 0;
-}
-
-  html, body {
-    width: 210mm;
-    height: 297mm;
-  }
-
-  .container {
-    align-items: flex-start;
-  }
-
-  .hide-print {
-    display: none;
-  }
-
-  html,
-  body
-  .container,
-  .cell,
-  input,
-  select,
-  button,
-  textarea {
-    background-color: white;
-    color: black;
   }
 }
 </style>
