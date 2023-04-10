@@ -7,4 +7,5 @@ public class Attack
     public string Damage { get; set; }
     public string DamageType { get; set; }
     public bool Finesse { get; set; }
+    public bool Proficiency { get; set; }
 }

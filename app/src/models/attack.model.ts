@@ -3,4 +3,5 @@ export interface Attack {
     damage: string;
     damageType: string;
     finesse: boolean;
+    proficiency: boolean;
 }

@@ -171,7 +171,6 @@ async function deleteSheetAsync(id: number): Promise<void> {
 
 async function loadSheetsAsync(): Promise<void> {
   sheets.value = await apiClient.listSheetsAsync(user.clientPrincipal.userId)
-  console.log(sheets.value)
 }
 
 function setActiveTab(tab: Tab) {
@@ -297,7 +296,8 @@ function addAttack() {
     damage: '',
     damageType: '',
     finesse: false,
-    name: ''
+    name: '',
+    proficiency: false
   } as Attack)
 }
 
@@ -336,6 +336,14 @@ function removeFeature(index: number) {
 
 function selectionChanged(payload: Event) {
   selectedSheet.value = sheets.value.find((sheet) => sheet.id == selectedSheetId.value)!
+}
+
+function getAttackModifier(attack: Attack): number {
+  return attack.finesse ? getAbility('Dexterity').score.getModifier() : getAbility('Strength').score.getModifier()
+}
+
+function getAttackRoll(attack: Attack): number {
+  return (attack.proficiency ? selectedSheet.value.general.proficiencyBonus : 0) + getAttackModifier(attack)
 }
 
 await loadSheetsAsync()
@@ -607,11 +615,12 @@ if(sheets.value.length != 0) {
             <div class="row">
               <div class="column">
                 <div class="attack row" v-for="(attack, i) in selectedSheet.attacks" :key="`attack-${i}`">
+                  <input type="checkbox" v-model="attack.proficiency">
                   <input type="checkbox" v-model="attack.finesse">
                   <input class="name" type="text" v-model="attack.name">
-                  <span class="attack-bonus">{{ (selectedSheet.general.proficiencyBonus + (attack.finesse ? getAbility('Dexterity').score.getModifier() : getAbility('Strength').score.getModifier())).formatModifier() }}</span>
+                  <span class="attack-bonus">{{ getAttackRoll(attack).formatModifier() }}</span>
                   <input class="damage" type="text" v-model="attack.damage">
-                  <span class="bonus-damage">{{ (attack.finesse ? getAbility('Dexterity').score.getModifier() : getAbility('Strength').score.getModifier()).formatModifier() }}</span>
+                  <span class="bonus-damage">{{ getAttackModifier(attack).formatModifier() }}</span>
                   <input class="damage-type" type="text" v-model="attack.damageType">
                   <button class="remove" @click="removeAttack(i)">-</button>
                 </div>
