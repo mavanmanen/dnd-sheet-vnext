@@ -1,0 +1,618 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Swashbuckle",
+    "description": "Swagger document by Swashbuckle",
+    "version": "v1"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:7071"
+    }
+  ],
+  "paths": {
+    "/api/user/{userId}/sheets/{id}": {
+      "delete": {
+        "tags": [
+          "DeleteSheet"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/user/{userId}/sheets": {
+      "get": {
+        "tags": [
+          "GetSheets"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sheet"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "NewSheet"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sheet"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "UpdateSheet"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sheet"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CharacterInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "class": {
+            "type": "string",
+            "nullable": true
+          },
+          "level": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "race": {
+            "type": "string",
+            "nullable": true
+          },
+          "background": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "alignment": {
+            "type": "string",
+            "nullable": true
+          },
+          "experiencePoints": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Ability": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "proficiency": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Abilities": {
+        "type": "object",
+        "properties": {
+          "strength": {
+            "$ref": "#/components/schemas/Ability"
+          },
+          "dexterity": {
+            "$ref": "#/components/schemas/Ability"
+          },
+          "constitution": {
+            "$ref": "#/components/schemas/Ability"
+          },
+          "intelligence": {
+            "$ref": "#/components/schemas/Ability"
+          },
+          "wisdom": {
+            "$ref": "#/components/schemas/Ability"
+          },
+          "charisma": {
+            "$ref": "#/components/schemas/Ability"
+          }
+        },
+        "additionalProperties": false
+      },
+      "General": {
+        "type": "object",
+        "properties": {
+          "inspiration": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "proficiencyBonus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "speed": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Skill": {
+        "type": "object",
+        "properties": {
+          "proficiency": {
+            "type": "boolean"
+          },
+          "expertise": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Skills": {
+        "type": "object",
+        "properties": {
+          "acrobatics": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "animalHandling": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "arcana": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "athletics": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "deception": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "history": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "insight": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "intimidation": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "investigation": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "medicine": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "nature": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "perception": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "performance": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "persuasion": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "religion": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "sleightOfHand": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "stealth": {
+            "$ref": "#/components/schemas/Skill"
+          },
+          "survival": {
+            "$ref": "#/components/schemas/Skill"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Armor": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "shield": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HealthPoints": {
+        "type": "object",
+        "properties": {
+          "maximum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "current": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temporary": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HitDice": {
+        "type": "object",
+        "properties": {
+          "max": {
+            "type": "string",
+            "nullable": true
+          },
+          "current": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "DeathSave": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "nullable": true
+          },
+          "failure": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Currency": {
+        "type": "object",
+        "properties": {
+          "copper": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "silver": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "electrum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gold": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "platinum": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Equipment": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "amount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "PIBF": {
+        "type": "object",
+        "properties": {
+          "personalityTraits": {
+            "type": "string",
+            "nullable": true
+          },
+          "ideals": {
+            "type": "string",
+            "nullable": true
+          },
+          "bonds": {
+            "type": "string",
+            "nullable": true
+          },
+          "flaws": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Attack": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "damage": {
+            "type": "string",
+            "nullable": true
+          },
+          "damageType": {
+            "type": "string",
+            "nullable": true
+          },
+          "finesse": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Feature": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Proficiencies": {
+        "type": "object",
+        "properties": {
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "armor": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "weapons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Sheet": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "characterInfo": {
+            "$ref": "#/components/schemas/CharacterInfo"
+          },
+          "abilities": {
+            "$ref": "#/components/schemas/Abilities"
+          },
+          "general": {
+            "$ref": "#/components/schemas/General"
+          },
+          "skills": {
+            "$ref": "#/components/schemas/Skills"
+          },
+          "armor": {
+            "$ref": "#/components/schemas/Armor"
+          },
+          "healthPoints": {
+            "$ref": "#/components/schemas/HealthPoints"
+          },
+          "hitDice": {
+            "$ref": "#/components/schemas/HitDice"
+          },
+          "deathSave": {
+            "$ref": "#/components/schemas/DeathSave"
+          },
+          "currency": {
+            "$ref": "#/components/schemas/Currency"
+          },
+          "equipment": {
+            "$ref": "#/components/schemas/Equipment"
+          },
+          "pibf": {
+            "$ref": "#/components/schemas/PIBF"
+          },
+          "attacks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attack"
+            },
+            "nullable": true
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Feature"
+            },
+            "nullable": true
+          },
+          "proficiencies": {
+            "$ref": "#/components/schemas/Proficiencies"
+          },
+          "notes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Note"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

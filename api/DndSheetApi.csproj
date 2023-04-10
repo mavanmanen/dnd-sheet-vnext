@@ -4,6 +4,7 @@
         <AzureFunctionsVersion>V4</AzureFunctionsVersion>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="AzureExtensions.Swashbuckle" Version="3.3.2" />
         <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" Version="6.0.15" />
         <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.3" />
