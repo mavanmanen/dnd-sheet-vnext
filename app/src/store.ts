@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { ApiClient } from './api-client'
-import { SkillNames, ArmorTypeAc, type Sheet, type User, type Skill, AbilityNames, type Ability, ProficiencyType, type Attack, type Equipment, type Feature, type Note, type MagicSection, type Spell, type VSM } from './models'
+import { SkillNames, ArmorTypeAc, type Sheet, type User, type Skill, AbilityNames, type Ability, ProficiencyType, type Attack, type Equipment, type Feature, type Note, type MagicSection, type Spell, type VSM, SpellcastingAbilityNames } from './models'
 import popup from '@/popup'
 
 const apiClient = new ApiClient()
@@ -79,7 +79,7 @@ function createSheet(userId: string): Sheet {
     }),
     userId: userId,
     magic: {
-      spellCastingAbility: '',
+      spellCastingAbility: SpellcastingAbilityNames.Intelligence,
       spellCastingClass: '',
       sections: [...generateSections()]
     }
