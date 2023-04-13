@@ -21,4 +21,5 @@ public class Sheet
     public ICollection<Feature> Features { get; set; }
     public Proficiencies Proficiencies { get; set; }
     public ICollection<Note> Notes { get; set; }
+    public Magic Magic { get; set; }
 }

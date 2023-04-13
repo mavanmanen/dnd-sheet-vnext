@@ -1,0 +1,223 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+html {
+  height: calc(100% - 1rem);
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'roboto';
+  background-color: #121212;
+  color: #FAFAFA;
+  margin: .5rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+select,
+input,
+textarea,
+button {
+  background-color: #424242;
+  color: #FAFAFA;
+  border: 0;
+  border-radius: .5rem;
+  padding: .1rem .5rem;
+}
+
+button {
+  white-space: nowrap;
+}
+
+.router-link-active > button {
+  background-color: #313131;
+}
+
+textarea {
+  font-family: 'roboto';
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: .25rem;
+}
+
+button-group {
+  > * {
+    border-radius: 0;
+
+    > * {
+      border-radius: 0;
+    }
+
+    &:first-child,
+    &:first-child > * {
+      border-top-left-radius: .5rem;
+      border-bottom-left-radius: .5rem;
+    }
+
+    &:last-child,
+    &:last-child > * {
+      border-top-right-radius: .5rem;
+      border-bottom-right-radius: .5rem;
+    }
+  }
+}
+
+$margin: .5rem;
+
+* {
+  box-sizing: border-box;
+}
+
+container {
+  display: flex;
+  width: 100%;
+}
+
+column {
+  display: flex;
+  height: auto;
+  width: 100%;
+  flex-direction: column;
+  margin-right: $margin;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+row {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  margin-bottom: $margin;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+cell {
+  display: flex;
+  flex-direction: column;
+  background-color: #212121;
+  border: solid 1px #424242;
+  border-radius: .5rem;
+  padding: .5rem;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  &[column] {
+    flex-direction: column;
+  }
+
+  &[row] {
+    flex-direction: row;
+  }
+}
+
+input {
+  width: 100%;
+
+  &[type=number] {
+    padding-right: 0;
+    padding-left: .9rem;
+  }
+
+  &[type=checkbox] {
+    appearance: none;
+    margin: 0;
+    margin-right: .5rem;
+
+    font: inherit;
+    color: currentColor;
+    width: 1.15rem;
+    height: 1.15rem;
+    border: 0.1rem solid #121212;
+    border-radius: 1.15rem;
+    transform: translateY(-0.075rem);
+
+    display: grid;
+    place-content: center;
+
+    &::before {
+      content: "";
+      width: 0.65rem;
+      height: 0.65rem;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+      transform: scale(0);
+      transform-origin: center center;
+      transition: 120ms transform ease-in-out;
+      box-shadow: inset 1rem 1rem #FAFAFA;
+      background-color: CanvasText;
+    }
+
+    &:checked::before {
+      transform: scale(.9);
+    }
+
+    &[shrink] {
+      margin: 0;
+    }
+  }
+}
+
+[grow] {
+  flex-grow: 1;
+  height: -webkit-fill-available;
+}
+
+[left] {
+  text-align: left;
+}
+
+[center] {
+  text-align: center;
+}
+
+[right] {
+  text-align: right;
+}
+
+[shrink] {
+  width: fit-content;
+  height: fit-content;
+}
+
+@for $i from 1 through calc(5/0.1) {
+  $step: calc($i/10);
+
+  [font-size="#{$step}"] {
+    font-size: #{$step}rem;
+  }
+
+  [width="#{$step}"] {
+    width: #{$step}rem;
+  }
+
+  [margin-right="#{$step}"] {
+    margin-right: #{$step}rem;
+  }
+}
+
+footer {
+  display: flex;
+  margin-top: .25rem;
+}
+
+popup {
+  @extend cell;
+
+  position: fixed;
+  right: $margin * 2;
+  bottom: $margin * 2;
+}

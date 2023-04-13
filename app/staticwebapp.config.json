@@ -5,6 +5,10 @@
             "allowedRoles": ["authenticated"]
         },
         {
+            "route": "/notes",
+            "allowedRoles": ["authenticated"]
+        },
+        {
             "route": "/api/*",
             "allowedRoles": ["authenticated"]
         },

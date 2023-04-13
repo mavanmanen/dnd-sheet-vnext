@@ -6,6 +6,14 @@ const router = createRouter({
         {
             path: '/',
             component: () => import('@/views/Sheet.vue')
+        },
+        {
+            path: '/magic',
+            component: () => import('@/views/Magic.vue')
+        },
+        {
+            path: '/notes',
+            component: () => import('@/views/Notes.vue')
         }
     ]
 })

@@ -13,7 +13,8 @@ import type {
     Attack,
     Feature,
     Proficiencies,
-    Note
+    Note,
+    Magic
 } from '.'
 
 export interface Sheet {
@@ -34,4 +35,5 @@ export interface Sheet {
     features: Feature[];
     proficiencies: Proficiencies;
     notes: Note[];
+    magic: Magic;
 }
