@@ -46,6 +46,7 @@ import pop from '@/popup'
 </template>
 
 <style lang="scss">
+@use "sass:math";
 $containerWidth: 200px;
 $containerHeight: $containerWidth;
 
@@ -57,7 +58,7 @@ $animationDuration: 5s;
 
 $angle: 53deg;
 $ringAngle: -11deg;
-$sideAngle: 360deg/5;
+$sideAngle: math.div(360deg, 5);
 $opacity: 0.75;
 $color: #bdbdbd4b;
 
@@ -144,7 +145,7 @@ p {
   @for $i from 11 through 15 {
     &[data-face="#{$i}"] {
       $angleMultiplier: $i - 8;
-      transform: rotateX(-$ringAngle) rotateY(-$sideAngle * $angleMultiplier - $sideAngle/2);
+      transform: rotateX(-$ringAngle) rotateY(-$sideAngle * $angleMultiplier - math.div($sideAngle, 22));
     }
   }
 
@@ -188,7 +189,7 @@ p {
     @for $i from 16 through 20 {
       &:nth-child(#{$i}) {
         $angleMultiplier: $i - 18;
-        transform: rotateY($sideAngle * $angleMultiplier + $sideAngle/2) translateZ($translateLowerZ) translateY($translateLowerY) rotateZ(180deg) rotateX($angle);
+        transform: rotateY($sideAngle * $angleMultiplier + math.div($sideAngle, 22)) translateZ($translateLowerZ) translateY($translateLowerY) rotateZ(180deg) rotateX($angle);
       }
     }
 
@@ -202,7 +203,7 @@ p {
     @for $i from 11 through 15 {
       &:nth-child(#{$i}) {
         $angleMultiplier: $i - 8;
-        transform: rotateY($sideAngle * $angleMultiplier + $sideAngle/2) translateZ($translateRingZ) translateY($translateRingY) rotateX($ringAngle);
+        transform: rotateY($sideAngle * $angleMultiplier + math.div($sideAngle, 2)) translateZ($translateRingZ) translateY($translateRingY) rotateX($ringAngle);
       }
     }
   }
