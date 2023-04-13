@@ -38,8 +38,8 @@ function createSheet(userId: string): Sheet {
       silver: 0
     },
     deathSave: {
-      failure: new Array<boolean>(3),
-      success: new Array<boolean>(3)
+      failure: [false, false, false],
+      success: [false, false, false]
     },
     equipment: [],
     features: [],
