@@ -318,16 +318,19 @@ function getAbilityForSkill(skill: Skill): Ability {
                 <input type="checkbox" v-model="attack.finesse">
               </column>
               <column>
-                <input type="text" margin-right="0.5" v-model="attack.name">
+                <input type="text" margin-right="0.5" v-model="attack.name" placeholder="Name">
               </column>
               <column shrink>
                 <span margin-right="0.5">{{ math.calculateAttackRoll(attack).formatModifier() }}</span>
               </column>
               <column shrink>
-                <input type="text" center margin-right="0.5" v-model="attack.damage">
+                <input type="text" center margin-right="0.5" v-model="attack.damage" placeholder="Damage">
               </column>
               <column shrink>
                 <span margin-right="0.5">{{ math.calculateAttackModifier(attack).formatModifier() }}</span>
+              </column>
+              <column shrink>
+                <input type="text" center v-model=attack.damageType placeholder="Type">
               </column>
               <column shrink>
                 <button @click="store.removeAttack(i)">-</button>
@@ -369,8 +372,8 @@ function getAbilityForSkill(skill: Skill): Ability {
                   <button @click="store.addEquipment()">+</button>
                 </row>
                 <row v-for="(equipment, i) of store.selectedSheet.equipment">
-                  <input type="text" grow margin-right="0.5" v-model="equipment.name">
-                  <input type="number" width="4" margin-right="0.5" v-model="equipment.amount">
+                  <input type="text" grow margin-right="0.5" v-model="equipment.name" placeholder="Name">
+                  <input type="number" width="4" margin-right="0.5" v-model="equipment.amount" placeholder="Amount">
                   <button @click="store.removeEquipment(i)">-</button>
                 </row>
               </column>
