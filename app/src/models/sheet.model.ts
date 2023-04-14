@@ -36,4 +36,5 @@ export interface Sheet {
     proficiencies: Proficiencies;
     notes: Note[];
     magic: Magic;
+    parameters: Map<string, number>;
 }

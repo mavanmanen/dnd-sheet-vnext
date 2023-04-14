@@ -8,17 +8,18 @@ textAreaResize()
 
 await store.initAsync()
 let magic = ref(store.selectedSheet.magic)
+let parameters = ref(store.selectedSheet.parameters)
 
 function getSpellCastingAbilityModifier() {
   return store.getAbility(magic.value.spellCastingAbility).score.getModifier()
 }
 
 function getAttackBonus() {
-  return getSpellCastingAbilityModifier() + store.selectedSheet.general.proficiencyBonus
+  return getSpellCastingAbilityModifier() + store.selectedSheet.general.proficiencyBonus + parameters.value.get('Spell Attack Bonus')!
 }
 
 function getSpellSaveDC() {
-  return 8 + getAttackBonus()
+  return 8 + getAttackBonus() + parameters.value.get('Spell Save DC')!
 }
 </script>
 
@@ -89,6 +90,20 @@ function getSpellSaveDC() {
               </row>
             </column>
           </row>
+          <row v-if="section.level > 0">
+            <column shrink>
+              Slots
+            </column>
+            <column>
+              <input type="number" v-model="section.slotsMaximum">
+            </column>
+            <column shrink>
+              Current
+            </column>
+            <column>
+              <input type="number" v-model="section.currentSlots">
+            </column>
+          </row>
           <row></row>
           <row grow>
             <column>
@@ -104,7 +119,7 @@ function getSpellSaveDC() {
                   </row>
 
                   <row>
-                    <column>
+                    <column v-if="section.level > 0">
                       <row>
                         <input type="checkbox" v-model="spell.prepared"><span>Prepared</span>
                       </row>
@@ -112,6 +127,7 @@ function getSpellSaveDC() {
                         <input type="checkbox" v-model="spell.ritual"><span>Ritual</span>
                       </row>
                     </column>
+                    <column v-else></column>
                     <column shrink>
                       <row>
                         <column center>V</column>

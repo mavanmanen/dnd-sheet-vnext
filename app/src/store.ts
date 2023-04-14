@@ -82,8 +82,28 @@ function createSheet(userId: string): Sheet {
       spellCastingAbility: SpellcastingAbilityNames.Intelligence,
       spellCastingClass: '',
       sections: [...generateSections()]
-    }
+    },
+    parameters: createParameters()
   }
+}
+
+function createParameters() {
+  let parameters = new Map<string, number>([
+    ['AC', 0],
+    ['Initiative', 0],
+    ['Spell Save DC', 0],
+    ['Spell Attack Bonus', 0]
+  ])
+
+  for (const ability of (Object.keys(AbilityNames) as Array<keyof typeof AbilityNames>)) {
+    parameters.set(AbilityNames[ability], 0)
+  }
+
+  for (const skill of (Object.keys(SkillNames) as Array<keyof typeof SkillNames>)) {
+    parameters.set(SkillNames[skill], 0)
+  }
+
+  return parameters
 }
 
 function emptySpell() {
@@ -308,6 +328,10 @@ const store = reactive({
 
         if (!sheet.magic.sections || sheet.magic.sections.length == 0) {
           sheet.magic.sections = [...generateSections()]
+        }
+
+        if (!sheet.parameters || !sheet.parameters.size || sheet.parameters.size == 0) {
+          sheet.parameters = createParameters()
         }
       }
 

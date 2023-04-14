@@ -22,4 +22,5 @@ public class Sheet
     public Proficiencies Proficiencies { get; set; }
     public ICollection<Note> Notes { get; set; }
     public Magic Magic { get; set; }
+    public Dictionary<string, int> Parameters { get; set; }
 }

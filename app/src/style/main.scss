@@ -34,7 +34,7 @@ button {
 }
 
 button {
-  white-space: nowrap;
+
 }
 
 .router-link-active > button {
@@ -74,6 +74,11 @@ $margin: .5rem;
 
 * {
   box-sizing: border-box;
+  white-space: nowrap;
+}
+
+textarea {
+  white-space: normal;
 }
 
 container {

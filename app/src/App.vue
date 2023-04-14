@@ -145,7 +145,7 @@ p {
   @for $i from 11 through 15 {
     &[data-face="#{$i}"] {
       $angleMultiplier: $i - 8;
-      transform: rotateX(-$ringAngle) rotateY(-$sideAngle * $angleMultiplier - math.div($sideAngle, 22));
+      transform: rotateX(-$ringAngle) rotateY(-$sideAngle * $angleMultiplier - math.div($sideAngle, 2));
     }
   }
 
@@ -189,7 +189,7 @@ p {
     @for $i from 16 through 20 {
       &:nth-child(#{$i}) {
         $angleMultiplier: $i - 18;
-        transform: rotateY($sideAngle * $angleMultiplier + math.div($sideAngle, 22)) translateZ($translateLowerZ) translateY($translateLowerY) rotateZ(180deg) rotateX($angle);
+        transform: rotateY($sideAngle * $angleMultiplier + math.div($sideAngle, 2)) translateZ($translateLowerZ) translateY($translateLowerY) rotateZ(180deg) rotateX($angle);
       }
     }
 

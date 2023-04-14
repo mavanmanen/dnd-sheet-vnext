@@ -6,21 +6,28 @@ import '@/extensions'
 import { textAreaResize } from '@/textarea-resize'
 textAreaResize()
 
+await store.initAsync()
+
 let characterInfo = ref(store.selectedSheet.characterInfo)
 let general = ref(store.selectedSheet.general)
 let deathSave = ref(store.selectedSheet.deathSave)
 let currency = ref(store.selectedSheet.currency)
+let parameters = ref(store.selectedSheet.parameters)
 
 function getSavingThrowModifier(ability: Ability): number {
-  return ability.score.getModifier() + (ability.proficiency ? general.value.proficiencyBonus : 0)
+  return getAbilityModifier(ability) + (ability.proficiency ? general.value.proficiencyBonus : 0)
 }
 
 function getAbilityForSkill(skill: Skill): Ability {
   return store.selectedSheet.abilities.find((x: Ability) => x.name === SkillToAbility.get(skill.name))!
 }
 
+function getAbilityModifier(ability: Ability): number {
+  return ability.score.getModifier() + parameters.value.get(ability.name)!
+}
+
 function getSkillModifier(skill: Skill): number {
-  return getAbilityForSkill(skill).score.getModifier() + (skill.proficiency ? general.value.proficiencyBonus + (skill.expertise ? general.value.proficiencyBonus : 0) : 0)
+  return getAbilityModifier(getAbilityForSkill(skill)) + (skill.proficiency ? general.value.proficiencyBonus + (skill.expertise ? general.value.proficiencyBonus : 0) : 0) + parameters.value.get(skill.name)!
 }
 
 function getSkill(name: string): Skill {
@@ -28,7 +35,7 @@ function getSkill(name: string): Skill {
 }
 
 function getPassiveWisdom(): number {
-  return 10 + store.getAbility(AbilityNames.Wisdom).score.getModifier() + (getSkill(SkillNames.Perception).proficiency ? general.value.proficiencyBonus : 0)
+  return 10 + getAbilityModifier(store.getAbility(AbilityNames.Wisdom)) + (getSkill(SkillNames.Perception).proficiency ? general.value.proficiencyBonus : 0)
 }
 
 function getProficiencies(proficiency: ProficiencyType) {
@@ -66,15 +73,15 @@ function getAc(): number {
   const armor = ArmorTypeAc.get(store.selectedSheet.armor.type)!
   const dexMod = store.getAbility(AbilityNames.Dexterity).score.getModifier()
 
-  return armor + dexMod + (store.selectedSheet.armor.shield ? 2 : 0)
+  return armor + dexMod + (store.selectedSheet.armor.shield ? 2 : 0) + parameters.value.get('AC')!
 }
 
 function getInitiative(): number {
-  return store.getAbility(AbilityNames.Dexterity).score.getModifier()
+  return getAbilityModifier(store.getAbility(AbilityNames.Dexterity)) + parameters.value.get('Initiative')!
 }
 
 function getAttackModifier(attack: Attack): number {
-  return attack.finesse ? store.getAbility(AbilityNames.Dexterity).score.getModifier() : store.getAbility(AbilityNames.Strength).score.getModifier()
+  return attack.finesse ? getAbilityModifier(store.getAbility(AbilityNames.Dexterity)) : getAbilityModifier(store.getAbility(AbilityNames.Strength))
 }
 
 function getAttackRoll(attack: Attack): number {
@@ -165,7 +172,7 @@ function getAttackRoll(attack: Attack): number {
         <row v-for="ability in store.selectedSheet.abilities" :key="ability.name">
           <cell>
             <span center>{{ ability.name }}</span>
-            <span center font-size="1.5">{{ ability.score.getModifier().formatModifier() }}</span>
+            <span center font-size="1.5">{{ getAbilityModifier(ability).formatModifier() }}</span>
             <input type="number" :id="`ability-${ability.name}`" center v-model="ability.score" />
           </cell>
         </row>
@@ -259,7 +266,9 @@ function getAttackRoll(attack: Attack): number {
           <column>
             <cell>
               <row grow>
-                <span center grow font-size="3" style="align-self: center;">{{ getInitiative().formatModifier() }}</span>
+                <column grow style="justify-content: center;">
+                  <span center font-size="3">{{ getInitiative().formatModifier() }}</span>
+                </column>
               </row>
               <footer>Initiative</footer>
             </cell>

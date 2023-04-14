@@ -30,6 +30,10 @@ await store.initAsync()
             <router-link to="/notes" v-slot="{ navigate }">
               <button @click="navigate" role="link">Notes</button>
             </router-link>
+
+            <router-link to="/parameters" v-slot="{ navigate }">
+              <button @click="navigate" role="link">Parameters</button>
+            </router-link>
           </button-group>
         </cell>
       </column>
