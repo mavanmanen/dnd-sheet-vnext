@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import store from '@/store'
+import router from '@/router'
 await store.initAsync()
 </script>
 
@@ -19,20 +20,8 @@ await store.initAsync()
       <column shrink>
         <cell row>
           <button-group>
-            <router-link to="/" v-slot="{ navigate }">
-              <button @click="navigate" role="link">Sheet</button>
-            </router-link>
-
-            <router-link to="/magic" v-slot="{ navigate }">
-              <button @click="navigate" role="link">Magic</button>
-            </router-link>
-
-            <router-link to="/notes" v-slot="{ navigate }">
-              <button @click="navigate" role="link">Notes</button>
-            </router-link>
-
-            <router-link to="/parameters" v-slot="{ navigate }">
-              <button @click="navigate" role="link">Parameters</button>
+            <router-link v-for="route in router.getRoutes()" :to="route.path" v-slot="{ navigate }">
+              <button @click="navigate" role="link">{{ route.name }}</button>
             </router-link>
           </button-group>
         </cell>
