@@ -11,7 +11,7 @@ let magic = ref(store.selectedSheet.magic)
 let parameters = ref(store.selectedSheet.parameters)
 
 function getSpellCastingAbilityModifier() {
-  return store.getAbility(magic.value.spellCastingAbility).score.getModifier()
+  return store.getAbility(magic.value.spellCastingAbility).score.getModifier() + parameters.value.get(magic.value.spellCastingAbility)!
 }
 
 function getAttackBonus() {
