@@ -116,7 +116,7 @@ function getAttackRoll(attack: Attack): number {
             <span>Class</span>
           </row>
           <row>
-            <input type="text" v-model="characterInfo.playerName">
+            <input type="text" v-model="characterInfo.class">
           </row>
         </column>
 
