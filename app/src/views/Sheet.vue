@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { SkillToAbility, AbilityNames, SkillNames, type Ability, type Skill, type Attack, ProficiencyType, ArmorTypeAc } from '@/models'
+import { SkillToAbility, type Ability, type Skill, ProficiencyType, ArmorTypeAc } from '@/models'
 import store from '@/store'
 import '@/extensions'
 import { textAreaResize } from '@/textarea-resize'
+import math from '@/math'
 textAreaResize()
 
 await store.initAsync()
@@ -12,80 +13,9 @@ let characterInfo = ref(store.selectedSheet.characterInfo)
 let general = ref(store.selectedSheet.general)
 let deathSave = ref(store.selectedSheet.deathSave)
 let currency = ref(store.selectedSheet.currency)
-let parameters = ref(store.selectedSheet.parameters)
-
-function getSavingThrowModifier(ability: Ability): number {
-  return getAbilityModifier(ability) + (ability.proficiency ? general.value.proficiencyBonus : 0)
-}
 
 function getAbilityForSkill(skill: Skill): Ability {
   return store.selectedSheet.abilities.find((x: Ability) => x.name === SkillToAbility.get(skill.name))!
-}
-
-function getAbilityModifier(ability: Ability): number {
-  return ability.score.getModifier() + parameters.value.get(ability.name)!
-}
-
-function getSkillModifier(skill: Skill): number {
-  return getAbilityModifier(getAbilityForSkill(skill)) + (skill.proficiency ? general.value.proficiencyBonus + (skill.expertise ? general.value.proficiencyBonus : 0) : 0) + parameters.value.get(skill.name)!
-}
-
-function getSkill(name: string): Skill {
-  return store.selectedSheet.skills.find((x: Skill) => x.name === name)!
-}
-
-function getPassiveWisdom(): number {
-  return 10 + getAbilityModifier(store.getAbility(AbilityNames.Wisdom)) + (getSkill(SkillNames.Perception).proficiency ? general.value.proficiencyBonus : 0)
-}
-
-function getProficiencies(proficiency: ProficiencyType) {
-  switch (proficiency) {
-    case ProficiencyType.Armor: return store.selectedSheet.proficiencies.armor
-    case ProficiencyType.Languages: return store.selectedSheet.proficiencies.languages
-    case ProficiencyType.Tools: return store.selectedSheet.proficiencies.tools
-    case ProficiencyType.Weapons: return store.selectedSheet.proficiencies.weapons
-  }
-}
-
-function setProficiency(proficiency: ProficiencyType, index: number, event: InputEvent) {
-  // @ts-ignore
-  const value = event.target!.value
-  switch (proficiency) {
-    case ProficiencyType.Armor:
-      store.selectedSheet.proficiencies.armor[index] = value
-      break
-
-    case ProficiencyType.Languages:
-      store.selectedSheet.proficiencies.languages[index] = value
-      break
-
-    case ProficiencyType.Tools:
-      store.selectedSheet.proficiencies.tools[index] = value
-      break
-
-    case ProficiencyType.Weapons:
-      store.selectedSheet.proficiencies.weapons[index] = value
-      break
-  }
-}
-
-function getAc(): number {
-  const armor = ArmorTypeAc.get(store.selectedSheet.armor.type)!
-  const dexMod = store.getAbility(AbilityNames.Dexterity).score.getModifier()
-
-  return armor + dexMod + (store.selectedSheet.armor.shield ? 2 : 0) + parameters.value.get('AC')!
-}
-
-function getInitiative(): number {
-  return getAbilityModifier(store.getAbility(AbilityNames.Dexterity)) + parameters.value.get('Initiative')!
-}
-
-function getAttackModifier(attack: Attack): number {
-  return attack.finesse ? getAbilityModifier(store.getAbility(AbilityNames.Dexterity)) : getAbilityModifier(store.getAbility(AbilityNames.Strength))
-}
-
-function getAttackRoll(attack: Attack): number {
-  return (attack.proficiency ? general.value.proficiencyBonus : 0) + getAttackModifier(attack)
 }
 </script>
 
@@ -172,7 +102,7 @@ function getAttackRoll(attack: Attack): number {
         <row v-for="ability in store.selectedSheet.abilities" :key="ability.name">
           <cell>
             <span center>{{ ability.name }}</span>
-            <span center font-size="1.5">{{ getAbilityModifier(ability).formatModifier() }}</span>
+            <span center font-size="1.5">{{ math.calculateAbilityModifier(ability).formatModifier() }}</span>
             <input type="number" :id="`ability-${ability.name}`" center v-model="ability.score" />
           </cell>
         </row>
@@ -195,10 +125,20 @@ function getAttackRoll(attack: Attack): number {
 
         <row>
           <cell>
+            <row>
+              <column width="1.5" center>P</column>
+              <column grow></column>
+            </row>
             <row v-for="ability in store.selectedSheet.abilities" :key="ability.name">
-              <input type="checkbox" v-model="ability.proficiency">
-              <span grow>{{ ability.name }}</span>
-              <span>{{ getSavingThrowModifier(ability).formatModifier() }}</span>
+              <column shrink>
+                <input type="checkbox" v-model="ability.proficiency">
+              </column>
+              <column grow>
+                <span>{{ ability.name }}</span>
+              </column>
+              <column shrink right>
+                <span>{{ math.calculateAbilitySavingThrowModifier(ability).formatModifier() }}</span>
+              </column>
             </row>
             <footer>Saving Throws</footer>
           </cell>
@@ -206,11 +146,24 @@ function getAttackRoll(attack: Attack): number {
 
         <row>
           <cell>
+            <row>
+              <column width="1.5" margin-right="0.8" center>P</column>
+              <column width="1.5" center>E</column>
+              <column grow></column>
+            </row>
             <row v-for="skill in store.selectedSheet.skills" :key="skill.name">
-              <input type="checkbox" v-model="skill.proficiency">
-              <input type="checkbox" v-model="skill.expertise">
-              <span grow>{{ skill.name }} ({{ getAbilityForSkill(skill).name.substring(0, 3) }})</span>
-              <span>{{ getSkillModifier(skill).formatModifier() }}</span>
+              <column shrink>
+                <input type="checkbox" v-model="skill.proficiency">
+              </column>
+              <column shrink>
+                <input type="checkbox" v-model="skill.expertise">
+              </column>
+              <column grow>
+                <span>{{ skill.name }} ({{ getAbilityForSkill(skill).name.substring(0, 3) }})</span>
+              </column>
+              <column shrink right>
+                <span>{{ math.calculateSkillModifier(skill).formatModifier() }}</span>
+              </column>
             </row>
             <footer>Skills</footer>
           </cell>
@@ -219,7 +172,7 @@ function getAttackRoll(attack: Attack): number {
         <row>
           <cell row>
             <span grow>Passive Wisdom (Perception)</span>
-            <span>{{ getPassiveWisdom().formatModifier() }}</span>
+            <span>{{ math.calculatePassiveWisdom().formatModifier() }}</span>
           </cell>
         </row>
 
@@ -231,9 +184,9 @@ function getAttackRoll(attack: Attack): number {
                   <span grow>{{ proficiencyType }}</span>
                   <button @click="store.addProficiency(proficiencyType)">+</button>
                 </row>
-                <row v-for="(proficiency, i) of getProficiencies(proficiencyType)">
+                <row v-for="(proficiency, i) of store.getProficiencies(proficiencyType)">
                   <input type="text" margin-right="0.5" :value="proficiency"
-                    @input="e => setProficiency(proficiencyType, i, e as InputEvent)">
+                    @input="e => store.setProficiency(proficiencyType, i, e.target.value)">
                   <button @click="store.removeProficieny(proficiencyType, i)">-</button>
                 </row>
                 <row></row>
@@ -257,7 +210,7 @@ function getAttackRoll(attack: Attack): number {
                 <input type="checkbox" v-model="store.selectedSheet.armor.shield">Shield
               </row>
               <row>
-                <span center grow font-size="3">{{ getAc() }}</span>
+                <span center grow font-size="3">{{ math.calculateAC() }}</span>
               </row>
               <footer>Armor Class</footer>
             </cell>
@@ -267,7 +220,7 @@ function getAttackRoll(attack: Attack): number {
             <cell>
               <row grow>
                 <column grow style="justify-content: center;">
-                  <span center font-size="3">{{ getInitiative().formatModifier() }}</span>
+                  <span center font-size="3">{{ math.calculateInitiative().formatModifier() }}</span>
                 </column>
               </row>
               <footer>Initiative</footer>
@@ -350,17 +303,35 @@ function getAttackRoll(attack: Attack): number {
         <row>
           <cell>
             <row>
-              <span grow></span>
-              <button @click="store.addAttack()">+</button>
+              <column width="1.5" margin-right="0.8" center>P</column>
+              <column width="1.5" center>F</column>
+              <column grow></column>
+              <column shrink>
+                <button @click="store.addAttack()">+</button>
+              </column>
             </row>
-            <row v-for="attack in store.selectedSheet.attacks">
-              <input type="checkbox" v-model="attack.proficiency">
-              <input type="checkbox" v-model="attack.finesse">
-              <input type="text" margin-right="0.5" v-model="attack.name">
-              <span margin-right="0.5">{{ getAttackRoll(attack).formatModifier() }}</span>
-              <input type="text" center width="4" margin-right="0.5" v-model="attack.damage">
-              <span margin-right="0.5">{{ getAttackModifier(attack).formatModifier() }}</span>
-              <button>-</button>
+            <row v-for="(attack, i) in store.selectedSheet.attacks">
+              <column shrink>
+                <input type="checkbox" v-model="attack.proficiency">
+              </column>
+              <column shrink>
+                <input type="checkbox" v-model="attack.finesse">
+              </column>
+              <column>
+                <input type="text" margin-right="0.5" v-model="attack.name">
+              </column>
+              <column shrink>
+                <span margin-right="0.5">{{ math.calculateAttackRoll(attack).formatModifier() }}</span>
+              </column>
+              <column shrink>
+                <input type="text" center margin-right="0.5" v-model="attack.damage">
+              </column>
+              <column shrink>
+                <span margin-right="0.5">{{ math.calculateAttackModifier(attack).formatModifier() }}</span>
+              </column>
+              <column shrink>
+                <button @click="store.removeAttack(i)">-</button>
+              </column>
             </row>
             <footer>Attacks</footer>
           </cell>

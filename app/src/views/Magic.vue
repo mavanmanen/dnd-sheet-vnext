@@ -4,23 +4,11 @@ import store from '@/store'
 import { SpellcastingAbilityNames } from '@/models'
 import '@/extensions'
 import { textAreaResize } from '@/textarea-resize'
+import math from '@/math'
 textAreaResize()
 
 await store.initAsync()
 let magic = ref(store.selectedSheet.magic)
-let parameters = ref(store.selectedSheet.parameters)
-
-function getSpellCastingAbilityModifier() {
-  return store.getAbility(magic.value.spellCastingAbility).score.getModifier() + parameters.value.get(magic.value.spellCastingAbility)!
-}
-
-function getAttackBonus() {
-  return getSpellCastingAbilityModifier() + store.selectedSheet.general.proficiencyBonus + parameters.value.get('Spell Attack Bonus')!
-}
-
-function getSpellSaveDC() {
-  return 8 + getAttackBonus() + parameters.value.get('Spell Save DC')!
-}
 </script>
 
 <template>
@@ -48,7 +36,7 @@ function getSpellSaveDC() {
             </column>
             <column>
               <span>
-                {{ getSpellCastingAbilityModifier().formatModifier() }}
+                {{ math.calculateSpellCastingAbilityModifier().formatModifier() }}
               </span>
             </column>
           </row>
@@ -59,7 +47,7 @@ function getSpellSaveDC() {
             <span>Spell Save DC</span>
           </row>
           <row>
-            <span>{{ getSpellSaveDC() }}</span>
+            <span>{{ math.calculateSpellSaveDC() }}</span>
           </row>
         </column>
 
@@ -68,7 +56,7 @@ function getSpellSaveDC() {
             <span>Spell Attack Bonus</span>
           </row>
           <row>
-            <span>{{ getAttackBonus().formatModifier() }}</span>
+            <span>{{ math.calculateSpellAttackBonus().formatModifier() }}</span>
           </row>
         </column>
       </cell>

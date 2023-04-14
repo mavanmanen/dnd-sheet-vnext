@@ -219,6 +219,35 @@ const store = reactive({
     }
   },
 
+  getProficiencies(proficiency: ProficiencyType) {
+    switch (proficiency) {
+      case ProficiencyType.Armor: return this.selectedSheet.proficiencies.armor
+      case ProficiencyType.Languages: return this.selectedSheet.proficiencies.languages
+      case ProficiencyType.Tools: return this.selectedSheet.proficiencies.tools
+      case ProficiencyType.Weapons: return this.selectedSheet.proficiencies.weapons
+    }
+  },
+
+  setProficiency(proficiency: ProficiencyType, index: number, value: string) {
+    switch (proficiency) {
+      case ProficiencyType.Armor:
+        this.selectedSheet.proficiencies.armor[index] = value
+        break
+
+      case ProficiencyType.Languages:
+        this.selectedSheet.proficiencies.languages[index] = value
+        break
+
+      case ProficiencyType.Tools:
+        this.selectedSheet.proficiencies.tools[index] = value
+        break
+
+      case ProficiencyType.Weapons:
+        this.selectedSheet.proficiencies.weapons[index] = value
+        break
+    }
+  },
+
   addAttack() {
     if (!this.selectedSheet.attacks) {
       this.selectedSheet.attacks = []
