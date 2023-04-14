@@ -17,6 +17,7 @@ watch(json, () => {
 
 <template>
   <cell>
+    <span>This may break the application if invalid values are supplied. Use at your own caution.</span>
     <textarea grow v-model="json"></textarea>
   </cell>
 </template>
