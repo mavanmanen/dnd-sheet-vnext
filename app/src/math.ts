@@ -9,8 +9,6 @@ import {
   SkillToAbility
 } from '@/models'
 
-await store.initAsync()
-
 function getParameter(name: string): number {
   return store.selectedSheet.parameters.get(name)!
 }
