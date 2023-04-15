@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import { SkillToAbility, type Ability, type Skill, ProficiencyType, ArmorTypeAc } from '@/models'
 import store from '@/store'
 import '@/extensions'
@@ -8,11 +7,6 @@ import math from '@/math'
 textAreaResize()
 
 await store.initAsync()
-
-let characterInfo = ref(store.selectedSheet.characterInfo)
-let general = ref(store.selectedSheet.general)
-let deathSave = ref(store.selectedSheet.deathSave)
-let currency = ref(store.selectedSheet.currency)
 
 function getAbilityForSkill(skill: Skill): Ability {
   return store.selectedSheet.abilities.find((x: Ability) => x.name === SkillToAbility.get(skill.name))!
@@ -28,7 +22,7 @@ function getAbilityForSkill(skill: Skill): Ability {
             <span>Player Name</span>
           </row>
           <row>
-            <input type="text" v-model="characterInfo.playerName">
+            <input type="text" v-model="store.selectedSheet.characterInfo.playerName">
           </row>
         </column>
 
@@ -37,7 +31,7 @@ function getAbilityForSkill(skill: Skill): Ability {
             <span>Character Name</span>
           </row>
           <row>
-            <input type="text" v-model="characterInfo.name">
+            <input type="text" v-model="store.selectedSheet.characterInfo.name">
           </row>
         </column>
 
@@ -46,7 +40,7 @@ function getAbilityForSkill(skill: Skill): Ability {
             <span>Class</span>
           </row>
           <row>
-            <input type="text" v-model="characterInfo.class">
+            <input type="text" v-model="store.selectedSheet.characterInfo.class">
           </row>
         </column>
 
@@ -55,7 +49,7 @@ function getAbilityForSkill(skill: Skill): Ability {
             <span>Level</span>
           </row>
           <row>
-            <input type="number" v-model="characterInfo.level">
+            <input type="number" v-model="store.selectedSheet.characterInfo.level">
           </row>
         </column>
 
@@ -64,7 +58,7 @@ function getAbilityForSkill(skill: Skill): Ability {
             <span>Race</span>
           </row>
           <row>
-            <input type="text" v-model="characterInfo.race">
+            <input type="text" v-model="store.selectedSheet.characterInfo.race">
           </row>
         </column>
 
@@ -73,7 +67,7 @@ function getAbilityForSkill(skill: Skill): Ability {
             <span>Background</span>
           </row>
           <row>
-            <input type="text" v-model="characterInfo.background">
+            <input type="text" v-model="store.selectedSheet.characterInfo.background">
           </row>
         </column>
 
@@ -82,7 +76,7 @@ function getAbilityForSkill(skill: Skill): Ability {
             <span>Alignment</span>
           </row>
           <row>
-            <input type="text" v-model="characterInfo.alignment">
+            <input type="text" v-model="store.selectedSheet.characterInfo.alignment">
           </row>
         </column>
 
@@ -91,7 +85,7 @@ function getAbilityForSkill(skill: Skill): Ability {
             <span>Experience Points</span>
           </row>
           <row>
-            <input type="number" v-model="characterInfo.experiencePoints">
+            <input type="number" v-model="store.selectedSheet.characterInfo.experiencePoints">
           </row>
         </column>
       </cell>
@@ -112,14 +106,15 @@ function getAbilityForSkill(skill: Skill): Ability {
         <row>
           <cell row>
             <label for="inspiration" grow>Inspiration</label>
-            <input type="number" id="inspiration" center width="3" v-model="general.inspiration" />
+            <input type="number" id="inspiration" center width="3" v-model="store.selectedSheet.general.inspiration" />
           </cell>
         </row>
 
         <row>
           <cell row>
             <label for="proficiency-bonus" grow>Proficiency Bonus</label>
-            <input type="number" id="proficiency-bonus" center width="3" v-model="general.proficiencyBonus" />
+            <input type="number" id="proficiency-bonus" center width="3"
+              v-model="store.selectedSheet.general.proficiencyBonus" />
           </cell>
         </row>
 
@@ -289,11 +284,13 @@ function getAbilityForSkill(skill: Skill): Ability {
             <cell>
               <row grow>
                 <span grow>Success</span>
-                <input type="checkbox" v-for="(_, i) in deathSave.success" v-model="deathSave.success[i]">
+                <input type="checkbox" v-for="(_, i) in store.selectedSheet.deathSave.success"
+                  v-model="store.selectedSheet.deathSave.success[i]">
               </row>
               <row grow>
                 <span grow>Failure</span>
-                <input type="checkbox" v-for="(_, i) in deathSave.failure" v-model="deathSave.failure">
+                <input type="checkbox" v-for="(_, i) in store.selectedSheet.deathSave.failure"
+                  v-model="store.selectedSheet.deathSave.failure">
               </row>
               <footer>Death saves</footer>
             </cell>
@@ -346,23 +343,23 @@ function getAbilityForSkill(skill: Skill): Ability {
               <column shrink style="align-self: flex-start;">
                 <row>
                   <span margin-right="0.5">CP</span>
-                  <input type="number" center width="4" v-model="currency.copper">
+                  <input type="number" center width="4" v-model="store.selectedSheet.currency.copper">
                 </row>
                 <row>
                   <span margin-right="0.5">SP</span>
-                  <input type="number" center width="4" v-model="currency.silver">
+                  <input type="number" center width="4" v-model="store.selectedSheet.currency.silver">
                 </row>
                 <row>
                   <span margin-right="0.5">EP</span>
-                  <input type="number" center width="4" v-model="currency.electrum">
+                  <input type="number" center width="4" v-model="store.selectedSheet.currency.electrum">
                 </row>
                 <row>
                   <span margin-right="0.5">GP</span>
-                  <input type="number" center width="4" v-model="currency.gold">
+                  <input type="number" center width="4" v-model="store.selectedSheet.currency.gold">
                 </row>
                 <row>
                   <span margin-right="0.5">PP</span>
-                  <input type="number" center width="4" v-model="currency.platinum">
+                  <input type="number" center width="4" v-model="store.selectedSheet.currency.platinum">
                 </row>
               </column>
               <column grow>

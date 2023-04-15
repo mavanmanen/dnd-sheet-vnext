@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import store from '@/store'
 import { SpellcastingAbilityNames } from '@/models'
 import '@/extensions'
@@ -8,7 +7,6 @@ import math from '@/math'
 textAreaResize()
 
 await store.initAsync()
-let magic = ref(store.selectedSheet.magic)
 </script>
 
 <template>
@@ -20,7 +18,7 @@ let magic = ref(store.selectedSheet.magic)
             <span>Spellcasting Class</span>
           </row>
           <row>
-            <input type="text" v-model="magic.spellCastingClass" />
+            <input type="text" v-model="store.selectedSheet.magic.spellCastingClass" />
           </row>
         </column>
 
@@ -30,7 +28,7 @@ let magic = ref(store.selectedSheet.magic)
           </row>
           <row>
             <column>
-              <select v-model="magic.spellCastingAbility">
+              <select v-model="store.selectedSheet.magic.spellCastingAbility">
                 <option v-for="ability in SpellcastingAbilityNames" :value="ability">{{ ability }}</option>
               </select>
             </column>
@@ -63,7 +61,7 @@ let magic = ref(store.selectedSheet.magic)
     </row>
 
     <row v-for="(_, i) in 2">
-      <column grow v-for="section in magic.sections.slice(i * 5, 5 + i * 5)">
+      <column grow v-for="section in store.selectedSheet.magic.sections.slice(i * 5, 5 + i * 5)">
         <cell>
           <row>
             <column>
