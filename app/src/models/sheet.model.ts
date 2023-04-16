@@ -14,7 +14,8 @@ import type {
     Feature,
     Proficiencies,
     Note,
-    Magic
+    Magic,
+    Background
 } from '.'
 
 export interface Sheet {
@@ -37,4 +38,5 @@ export interface Sheet {
     notes: Note[];
     magic: Magic;
     parameters: Map<string, number>;
+    background: Background;
 }

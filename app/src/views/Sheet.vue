@@ -95,9 +95,9 @@ function getAbilityForSkill(skill: Skill): Ability {
       <column shrink>
         <row v-for="ability in store.selectedSheet.abilities" :key="ability.name">
           <cell>
-            <span center>{{ ability.name }}</span>
-            <span center font-size="1.5">{{ math.calculateAbilityModifier(ability).formatModifier() }}</span>
-            <input type="number" :id="`ability-${ability.name}`" center v-model="ability.score" />
+            <span center font-size="1.5">{{ ability.name }}</span>
+            <span center font-size="3">{{ math.calculateAbilityModifier(ability).formatModifier() }}</span>
+            <input type="number" font-size="1.5" :id="`ability-${ability.name}`" center v-model="ability.score" />
           </cell>
         </row>
       </column>
@@ -381,34 +381,6 @@ function getAbilityForSkill(skill: Skill): Ability {
       </column>
 
       <column>
-        <row>
-          <cell>
-            <textarea v-model="store.selectedSheet.pibf.personalityTraits"></textarea>
-            <footer>Personality Traits</footer>
-          </cell>
-        </row>
-
-        <row>
-          <cell>
-            <textarea v-model="store.selectedSheet.pibf.ideals"></textarea>
-            <footer>Ideals</footer>
-          </cell>
-        </row>
-
-        <row>
-          <cell>
-            <textarea v-model="store.selectedSheet.pibf.bonds"></textarea>
-            <footer>Bonds</footer>
-          </cell>
-        </row>
-
-        <row>
-          <cell>
-            <textarea v-model="store.selectedSheet.pibf.flaws"></textarea>
-            <footer>Flaws</footer>
-          </cell>
-        </row>
-
         <row>
           <cell>
             <row>

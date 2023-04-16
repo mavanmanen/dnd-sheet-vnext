@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 import { ApiClient } from './api-client'
-import { SkillNames, ArmorTypeAc, type Sheet, type User, type Skill, AbilityNames, type Ability, ProficiencyType, type Attack, type Equipment, type Feature, type Note, type MagicSection, type Spell, type VSM, SpellcastingAbilityNames } from './models'
+import { SkillNames, ArmorTypeAc, type Sheet, type User, type Skill, AbilityNames, type Ability, ProficiencyType, type Attack, type Equipment, type Feature, type Note, type MagicSection, type Spell, type VSM, SpellcastingAbilityNames, type Background } from './models'
 import popup from '@/popup'
 import sheetConverter from '@/sheet-converter'
 
@@ -84,7 +84,20 @@ function createSheet(userId: string): Sheet {
       spellCastingClass: '',
       sections: [...generateSections()]
     },
-    parameters: createParameters()
+    parameters: createParameters(),
+    background: {
+      additionalFeaturesTraits: '',
+      age: '',
+      alliesOrganizations: '',
+      backstory: '',
+      eyes: '',
+      hair: '',
+      height: '',
+      image: '',
+      skin: '',
+      treasure: '',
+      weight: ''
+    }
   }
 }
 
@@ -361,6 +374,10 @@ const store = reactive({
 
         if (!sheet.parameters || !sheet.parameters.size || sheet.parameters.size == 0) {
           sheet.parameters = createParameters()
+        }
+
+        if (!sheet.background) {
+          sheet.background = {} as Background
         }
       }
 

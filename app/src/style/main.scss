@@ -222,3 +222,7 @@ popup {
   right: $margin * 2;
   bottom: $margin * 2;
 }
+
+[hidden] {
+  display: none;
+}

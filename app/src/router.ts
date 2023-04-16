@@ -14,6 +14,11 @@ const router = createRouter({
             component: () => import('@/views/Magic.vue')
         },
         {
+            name: 'Background',
+            path: '/background',
+            component: () => import('@/views/Background.vue')
+        },
+        {
             name: 'Notes',
             path: '/notes',
             component: () => import('@/views/Notes.vue')

@@ -23,4 +23,5 @@ public class Sheet
     public ICollection<Note> Notes { get; set; }
     public Magic Magic { get; set; }
     public Dictionary<string, int> Parameters { get; set; }
+    public Background Background { get; set; }
 }
