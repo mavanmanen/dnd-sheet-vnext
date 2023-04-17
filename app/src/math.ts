@@ -6,7 +6,8 @@ import {
   AbilityNames,
   SkillNames,
   ArmorTypeAc,
-  SkillToAbility
+  SkillToAbility,
+  ArmorClass
 } from '@/models'
 
 function getParameter(name: string): number {
@@ -69,14 +70,26 @@ function calculatePassiveWisdom(): number {
   return base
 }
 
-// armorAc + dexterity + 2 (if shield)
+// armorAc + dexterity (light armor & max +2 if medium armor) + 2 (if shield)
 function calculateAC(): number {
   const armor = ArmorTypeAc.get(store.selectedSheet.armor.type)!
-  const dexterity = getAbilityByName(AbilityNames.Dexterity)
-  let base = armor + calculateAbilityModifier(dexterity)
+  const dexterity = calculateAbilityModifier(getAbilityByName(AbilityNames.Dexterity))
+  let base = armor.ac
+
+  switch (armor.class) {
+    case ArmorClass.Light:
+      base += dexterity
+      break
+
+    case ArmorClass.Medium:
+      base += Math.min(2, dexterity)
+      break
+  }
+
   if (store.selectedSheet.armor.shield) {
     base += 2
   }
+
   return base + getParameter('AC')
 }
 

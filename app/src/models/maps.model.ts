@@ -1,4 +1,5 @@
-import { AbilityNames, SkillNames } from "./enums.model"
+import type { ArmorDefinition } from './armor-definition.model'
+import { AbilityNames, ArmorClass, SkillNames } from './enums.model'
 
 export const SkillToAbility = new Map<string, string>([
   [SkillNames.Acrobatics, AbilityNames.Dexterity],
@@ -21,17 +22,17 @@ export const SkillToAbility = new Map<string, string>([
   [SkillNames.Survival, AbilityNames.Wisdom]
 ])
 
-export const ArmorTypeAc = new Map<string, number>([
-  ['Padded', 11],
-  ['Leather', 11],
-  ['Studded Leather', 12],
-  ['Hide', 12],
-  ['Chain Shirt', 13],
-  ['Scale Mail', 14],
-  ['Breastplate', 14],
-  ['Ring Mail', 14],
-  ['Half Plate', 15],
-  ['Chain Mail', 16],
-  ['Splint', 17],
-  ['Plate', 18]
+export const ArmorTypeAc = new Map<string, ArmorDefinition>([
+  ['Padded', { class: ArmorClass.Light, ac: 11, stealthDisadvantage: true }],
+  ['Leather', { class: ArmorClass.Light, ac: 11, stealthDisadvantage: false }],
+  ['Studded Leather', { class: ArmorClass.Light, ac: 12, stealthDisadvantage: false }],
+  ['Hide', { class: ArmorClass.Medium, ac: 12, stealthDisadvantage: false }],
+  ['Chain Shirt', { class: ArmorClass.Medium, ac: 13, stealthDisadvantage: false }],
+  ['Scale Mail', { class: ArmorClass.Medium, ac: 14, stealthDisadvantage: true }],
+  ['Breastplate', { class: ArmorClass.Medium, ac: 14, stealthDisadvantage: false }],
+  ['Half Plate', { class: ArmorClass.Medium, ac: 15, stealthDisadvantage: true }],
+  ['Ring Mail', { class: ArmorClass.Heavy, ac: 14, stealthDisadvantage: true }],
+  ['Chain Mail', { class: ArmorClass.Heavy, ac: 16, stealthDisadvantage: true }],
+  ['Splint', { class: ArmorClass.Heavy, ac: 17, stealthDisadvantage: true }],
+  ['Plate', { class: ArmorClass.Heavy, ac: 18, stealthDisadvantage: true }]
 ])

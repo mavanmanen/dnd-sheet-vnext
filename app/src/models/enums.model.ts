@@ -40,3 +40,9 @@ export enum SkillNames {
   Stealth = 'Stealth',
   Survival = 'Survival'
 }
+
+export enum ArmorClass {
+  Light,
+  Medium,
+  Heavy
+}

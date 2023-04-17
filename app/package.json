@@ -9,6 +9,7 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "jquery": "^3.6.4",
     "vue": "^3.2.38",
     "vue-cookies": "^1.8.3",
     "vue-router": "^4.0.13"
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@azure/static-web-apps-cli": "^1.1.1",
     "@rushstack/eslint-patch": "^1.1.4",
+    "@types/jquery": "^3.5.16",
     "@types/node": "^16.11.56",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vue/eslint-config-prettier": "^7.0.0",

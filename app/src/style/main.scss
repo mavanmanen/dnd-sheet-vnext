@@ -226,3 +226,8 @@ popup {
 [hidden] {
   display: none;
 }
+
+[highlight-ref].highlight {
+  font-weight: bold;
+  color: #fffc44;
+}

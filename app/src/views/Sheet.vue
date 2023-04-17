@@ -1,15 +1,54 @@
 <script setup lang="ts">
-import { SkillToAbility, type Ability, type Skill, ProficiencyType, ArmorTypeAc } from '@/models'
+import { SkillToAbility, type Ability, type Skill, ProficiencyType, ArmorTypeAc, SkillNames } from '@/models'
 import store from '@/store'
 import '@/extensions'
 import { textAreaResize } from '@/textarea-resize'
 import math from '@/math'
+import $ from 'jquery'
+import { ref } from 'vue'
 textAreaResize()
 
 await store.initAsync()
 
 function getAbilityForSkill(skill: Skill): Ability {
   return store.selectedSheet.abilities.find((x: Ability) => x.name === SkillToAbility.get(skill.name))!
+}
+
+function getArmorStealthDisadvantage(): boolean {
+  return ArmorTypeAc.get(store.selectedSheet.armor.type)!.stealthDisadvantage
+}
+
+let armorStealthDisadvantage = ref(getArmorStealthDisadvantage())
+
+function selectedArmorChanged() {
+  armorStealthDisadvantage.value = getArmorStealthDisadvantage()
+}
+
+function getHighlightRefElements(refs: string[]) {
+  let elements = []
+  for (const ref of refs) {
+    for (const el of $('[highlight-ref]').get()) {
+      const targets = $(el).attr('highlight-ref')!.split(' ')
+      if (targets.includes(ref)) {
+        elements.push(el)
+      }
+    }
+  }
+  return elements
+}
+
+function highlight(ref: string[]) {
+  const elements = getHighlightRefElements(ref)
+  for (const el of elements) {
+    $(el).addClass('highlight')
+  }
+}
+
+function stopHighlight(ref: string[]) {
+  const elements = getHighlightRefElements(ref)
+  for (const el of elements) {
+    $(el).removeClass('highlight')
+  }
 }
 </script>
 
@@ -94,7 +133,8 @@ function getAbilityForSkill(skill: Skill): Ability {
     <row>
       <column shrink>
         <row v-for="ability in store.selectedSheet.abilities" :key="ability.name">
-          <cell>
+          <cell @mouseenter="highlight([ability.name])" @mouseleave="stopHighlight([ability.name])"
+            :highlight-ref="`ability-${ability.name}`">
             <span center font-size="1.5">{{ ability.name }}</span>
             <span center font-size="3">{{ math.calculateAbilityModifier(ability).formatModifier() }}</span>
             <input type="number" font-size="1.5" :id="`ability-${ability.name}`" center v-model="ability.score" />
@@ -124,7 +164,7 @@ function getAbilityForSkill(skill: Skill): Ability {
               <column width="1.5" center>P</column>
               <column grow></column>
             </row>
-            <row v-for="ability in store.selectedSheet.abilities" :key="ability.name">
+            <row v-for="ability in store.selectedSheet.abilities" :key="ability.name" :highlight-ref="ability.name">
               <column shrink>
                 <input type="checkbox" v-model="ability.proficiency">
               </column>
@@ -146,7 +186,10 @@ function getAbilityForSkill(skill: Skill): Ability {
               <column width="1.5" center>E</column>
               <column grow></column>
             </row>
-            <row v-for="skill in store.selectedSheet.skills" :key="skill.name">
+            <row v-for="skill in store.selectedSheet.skills" :key="skill.name"
+              :highlight-ref="`${getAbilityForSkill(skill).name} skill-${skill.name}`"
+              @mouseenter="highlight([`ability-${getAbilityForSkill(skill).name}`, skill.name])"
+              @mouseleave="stopHighlight([`ability-${getAbilityForSkill(skill).name}`, skill.name])">
               <column shrink>
                 <input type="checkbox" v-model="skill.proficiency">
               </column>
@@ -164,7 +207,8 @@ function getAbilityForSkill(skill: Skill): Ability {
           </cell>
         </row>
 
-        <row>
+        <row highlight-ref="Wisdom Perception" @mouseenter="highlight(['ability-Wisdom', 'skill-Perception'])"
+          @mouseleave="stopHighlight(['ability-Wisdom', 'skill-Perception'])">
           <cell row>
             <span grow>Passive Wisdom (Perception)</span>
             <span>{{ math.calculatePassiveWisdom().formatModifier() }}</span>
@@ -195,9 +239,9 @@ function getAbilityForSkill(skill: Skill): Ability {
       <column>
         <row>
           <column>
-            <cell>
+            <cell @mouseenter="highlight(['ability-Dexterity'])" @mouseleave="stopHighlight(['ability-Dexterity'])">
               <row grow>
-                <select v-model="store.selectedSheet.armor.type" grow>
+                <select v-model="store.selectedSheet.armor.type" grow @change="selectedArmorChanged">
                   <option v-for="armorType in ArmorTypeAc.keys()" :value="armorType">{{ armorType }}</option>
                 </select>
               </row>
@@ -205,14 +249,18 @@ function getAbilityForSkill(skill: Skill): Ability {
                 <input type="checkbox" v-model="store.selectedSheet.armor.shield">Shield
               </row>
               <row>
+                <input type="checkbox" disabled v-model="armorStealthDisadvantage">Stealth disadvantage
+              </row>
+              <row highlight-ref="Dexterity">
                 <span center grow font-size="3">{{ math.calculateAC() }}</span>
               </row>
-              <footer>Armor Class</footer>
+              <footer highlight-ref="Dexterity">Armor Class</footer>
             </cell>
           </column>
 
           <column>
-            <cell>
+            <cell highlight-ref="Dexterity" @mouseenter="highlight(['ability-Dexterity'])"
+              @mouseleave="stopHighlight(['ability-Dexterity'])">
               <row grow>
                 <column grow style="justify-content: center;">
                   <span center font-size="3">{{ math.calculateInitiative().formatModifier() }}</span>
