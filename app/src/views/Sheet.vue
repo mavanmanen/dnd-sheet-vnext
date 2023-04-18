@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { SkillToAbility, type Ability, type Skill, ProficiencyType, ArmorTypeAc, SkillNames } from '@/models'
+import { SkillToAbility, type Ability, type Skill, ProficiencyType, ArmorTypeAc, SkillNames, AbilityNames } from '@/models'
 import store from '@/store'
 import '@/extensions'
 import { textAreaResize } from '@/textarea-resize'
@@ -348,8 +348,7 @@ function stopHighlight(ref: string[]) {
         <row>
           <cell>
             <row>
-              <column width="1.5" margin-right="0.8" center>P</column>
-              <column width="1.5" center>F</column>
+              <column width="1.5" center>P</column>
               <column grow></column>
               <column shrink>
                 <button @click="store.addAttack()">+</button>
@@ -359,11 +358,13 @@ function stopHighlight(ref: string[]) {
               <column shrink>
                 <input type="checkbox" v-model="attack.proficiency">
               </column>
-              <column shrink>
-                <input type="checkbox" v-model="attack.finesse">
-              </column>
               <column>
                 <input type="text" margin-right="0.5" v-model="attack.name" placeholder="Name">
+              </column>
+              <column shrink>
+                <select v-model="attack.ability">
+                  <option v-for="ability in AbilityNames" :value="ability">{{ ability }}</option>
+                </select>
               </column>
               <column shrink>
                 <span margin-right="0.5">{{ math.calculateAttackRoll(attack).formatModifier() }}</span>

@@ -102,11 +102,8 @@ function calculateInitiative(): number {
 
 // strength, dexterity if finesse
 function calculateAttackModifier(attack: Attack): number {
-  const dexterity = getAbilityByName(AbilityNames.Dexterity)
-  const strength = getAbilityByName(AbilityNames.Strength)
-  let base = attack.finesse
-    ? calculateAbilityModifier(dexterity)
-    : calculateAbilityModifier(strength)
+  const ability = getAbilityByName(attack.ability)
+  let base = calculateAbilityModifier(ability)
   return base
 }
 

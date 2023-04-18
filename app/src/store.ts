@@ -186,7 +186,7 @@ const store = reactive({
   },
 
   async deleteSheetAsync() {
-    if (window.confirm(`Are you sure you want to delete this sheet?\nSheet Name: ${this.selectedSheet.characterInfo.name}`)) {
+    if (window.confirm(`Are you sure you want to remove this sheet?\nName: ${this.selectedSheet.characterInfo.name}`)) {
       await apiClient.deleteSheetAsync(this.user.clientPrincipal.userId, this.selectedSheetId!)
       this.sheets.splice(this.sheets.indexOf(this.selectedSheet), 1)
     }
@@ -269,14 +269,17 @@ const store = reactive({
     this.selectedSheet.attacks.push({
       damage: '',
       damageType: '',
-      finesse: false,
       name: '',
-      proficiency: false
+      proficiency: false,
+      ability: AbilityNames.Strength
     } as Attack)
   },
 
   removeAttack(index: number) {
-    this.selectedSheet.attacks.splice(index, 1)
+    const attack = this.selectedSheet.attacks[index]
+    if (window.confirm(`Are you sure you want to remove this attack?\nName: ${attack.name}`)) {
+      this.selectedSheet.attacks.splice(index, 1)
+    }
   },
 
   addEquipment() {
@@ -291,7 +294,10 @@ const store = reactive({
   },
 
   removeEquipment(index: number) {
-    this.selectedSheet.equipment.splice(index, 1)
+    const equipment = this.selectedSheet.equipment[index]
+    if (window.confirm(`Are you sure you want to remove this equipment item?\nName: ${equipment.name}`)) {
+      this.selectedSheet.equipment.splice(index, 1)
+    }
   },
 
   addFeature() {
@@ -305,7 +311,10 @@ const store = reactive({
   },
 
   removeFeature(index: number) {
-    this.selectedSheet.features.splice(index, 1)
+    const feature = this.selectedSheet.features[index]
+    if (window.confirm(`Are you sure you want to remove this feature?\nName: ${feature.name}`)) {
+      this.selectedSheet.features.splice(index, 1)
+    }
   },
 
   async saveSheetAsync() {
@@ -378,6 +387,12 @@ const store = reactive({
 
         if (!sheet.background) {
           sheet.background = {} as Background
+        }
+
+        for (const attack of sheet.attacks) {
+          if (!attack.ability) {
+            attack.ability = AbilityNames.Strength
+          }
         }
       }
 
