@@ -10,6 +10,16 @@ textAreaResize()
 
 await store.initAsync()
 
+let featureMinifyState = ref(store.selectedSheet.features.map(f => false))
+let featureMinifyAllState = ref(false)
+
+function featureMinifyAll() {
+  featureMinifyAllState.value = !featureMinifyAllState.value
+  for (let i = 0; i < featureMinifyState.value.length; i++) {
+    featureMinifyState.value[i] = featureMinifyAllState.value
+  }
+}
+
 function getAbilityForSkill(skill: Skill): Ability {
   return store.selectedSheet.abilities.find((x: Ability) => x.name === SkillToAbility.get(skill.name))!
 }
@@ -142,7 +152,7 @@ function stopHighlight(ref: string[]) {
         </row>
       </column>
 
-      <column>
+      <column shrink style="min-width: 400px;">
         <row>
           <cell row>
             <label for="inspiration" grow>Inspiration</label>
@@ -221,12 +231,12 @@ function stopHighlight(ref: string[]) {
               <column>
                 <row>
                   <span grow>{{ proficiencyType }}</span>
-                  <button @click="store.addProficiency(proficiencyType)">+</button>
+                  <button @click="store.addProficiency(proficiencyType)">Add {{ proficiencyType }} Proficiency</button>
                 </row>
                 <row v-for="(proficiency, i) of store.getProficiencies(proficiencyType)">
                   <input type="text" margin-right="0.5" :value="proficiency"
                     @input="e => store.setProficiency(proficiencyType, i, e.target.value)">
-                  <button @click="store.removeProficieny(proficiencyType, i)">-</button>
+                  <button @click="store.removeProficieny(proficiencyType, i)">Remove</button>
                 </row>
                 <row></row>
               </column>
@@ -351,7 +361,7 @@ function stopHighlight(ref: string[]) {
               <column width="1.5" center>P</column>
               <column grow></column>
               <column shrink>
-                <button @click="store.addAttack()">+</button>
+                <button @click="store.addAttack()">Add Attack</button>
               </column>
             </row>
             <row v-for="(attack, i) in store.selectedSheet.attacks">
@@ -359,7 +369,7 @@ function stopHighlight(ref: string[]) {
                 <input type="checkbox" v-model="attack.proficiency">
               </column>
               <column>
-                <input type="text" margin-right="0.5" v-model="attack.name" placeholder="Name">
+                <input type="text" v-model="attack.name" placeholder="Name">
               </column>
               <column shrink>
                 <select v-model="attack.ability">
@@ -367,19 +377,19 @@ function stopHighlight(ref: string[]) {
                 </select>
               </column>
               <column shrink>
-                <span margin-right="0.5">{{ math.calculateAttackRoll(attack).formatModifier() }}</span>
+                <span>{{ math.calculateAttackRoll(attack).formatModifier() }}</span>
               </column>
               <column shrink>
-                <input type="text" center margin-right="0.5" v-model="attack.damage" placeholder="Damage">
+                <input type="text" center v-model="attack.damage" placeholder="Damage">
               </column>
               <column shrink>
-                <span margin-right="0.5">{{ math.calculateAttackModifier(attack).formatModifier() }}</span>
+                <span>{{ math.calculateAttackModifier(attack).formatModifier() }}</span>
               </column>
               <column shrink>
                 <input type="text" center v-model=attack.damageType placeholder="Type">
               </column>
               <column shrink>
-                <button @click="store.removeAttack(i)">-</button>
+                <button @click="store.removeAttack(i)">Remove</button>
               </column>
             </row>
             <footer>Attacks</footer>
@@ -415,12 +425,12 @@ function stopHighlight(ref: string[]) {
                 <row>
                   <span grow>Name</span>
                   <span width="4">Amount</span>
-                  <button @click="store.addEquipment()">+</button>
+                  <button @click="store.addEquipment()">Add Equipment</button>
                 </row>
                 <row v-for="(equipment, i) of store.selectedSheet.equipment">
                   <input type="text" grow margin-right="0.5" v-model="equipment.name" placeholder="Name">
                   <input type="number" width="4" margin-right="0.5" v-model="equipment.amount" placeholder="Amount">
-                  <button @click="store.removeEquipment(i)">-</button>
+                  <button @click="store.removeEquipment(i)">Remove</button>
                 </row>
               </column>
             </row>
@@ -433,16 +443,28 @@ function stopHighlight(ref: string[]) {
         <row>
           <cell>
             <row>
-              <span grow></span>
-              <button @click="store.addFeature()">+</button>
+              <column grow></column>
+              <column shrink>
+                <button @click="store.addFeature()">Add Feature</button>
+              </column>
+              <column shrink>
+                <button @click="featureMinifyAll()">Toggle All</button>
+              </column>
             </row>
             <row v-for="(feature, i) of store.selectedSheet.features">
               <column>
                 <row>
-                  <input type="text" margin-right="0.5" v-model="feature.name">
-                  <button @click="store.removeFeature(i)">-</button>
+                  <column>
+                    <input type="text" v-model="feature.name">
+                  </column>
+                  <column shrink>
+                    <button @click="store.removeFeature(i)">Remove</button>
+                  </column>
+                  <column shrink>
+                    <button @click="featureMinifyState[i] = !featureMinifyState[i]">Toggle</button>
+                  </column>
                 </row>
-                <row>
+                <row v-if="!featureMinifyState[i]">
                   <textarea v-model="feature.description"></textarea>
                 </row>
               </column>
