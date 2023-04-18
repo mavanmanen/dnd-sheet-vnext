@@ -364,7 +364,7 @@ function stopHighlight(ref: string[]) {
                 <button @click="store.addAttack()">Add Attack</button>
               </column>
             </row>
-            <row v-for="(attack, i) in store.selectedSheet.attacks">
+            <row v-for="(attack, i) in store.selectedSheet.attacks" :highlight-ref="attack.ability">
               <column shrink>
                 <input type="checkbox" v-model="attack.proficiency">
               </column>
