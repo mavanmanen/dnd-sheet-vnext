@@ -186,9 +186,15 @@ const store = reactive({
   },
 
   async deleteSheetAsync() {
+    if (this.sheets.length == 1) {
+      window.alert('Can\'t remove your only sheet')
+      return
+    }
+
     if (window.confirm(`Are you sure you want to remove this sheet?\nName: ${this.selectedSheet.characterInfo.name}`)) {
       await apiClient.deleteSheetAsync(this.user.clientPrincipal.userId, this.selectedSheetId!)
       this.sheets.splice(this.sheets.indexOf(this.selectedSheet), 1)
+      this.selectedSheetId = this.sheets[0].id!
     }
   },
 
