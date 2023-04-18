@@ -423,14 +423,23 @@ function stopHighlight(ref: string[]) {
               </column>
               <column grow>
                 <row>
-                  <span grow>Name</span>
-                  <span width="4">Amount</span>
-                  <button @click="store.addEquipment()">Add Equipment</button>
+                  <column grow>
+                    <span>Name</span>
+                  </column>
+                  <column shrink>
+                    <button @click="store.addEquipment()">Add Equipment</button>
+                  </column>
                 </row>
                 <row v-for="(equipment, i) of store.selectedSheet.equipment">
-                  <input type="text" grow margin-right="0.5" v-model="equipment.name" placeholder="Name">
-                  <input type="number" width="4" margin-right="0.5" v-model="equipment.amount" placeholder="Amount">
-                  <button @click="store.removeEquipment(i)">Remove</button>
+                  <column grow>
+                    <input type="text" v-model="equipment.name" placeholder="Name">
+                  </column>
+                  <column shrink>
+                    <input type="number" width="4" v-model="equipment.amount" placeholder="Amount">
+                  </column>
+                  <column shrink>
+                    <button @click="store.removeEquipment(i)">Remove</button>
+                  </column>
                 </row>
               </column>
             </row>
